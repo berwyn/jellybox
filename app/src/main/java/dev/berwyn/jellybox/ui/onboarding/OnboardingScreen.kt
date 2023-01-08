@@ -13,6 +13,10 @@ fun OnboardingScreen(
     onSetupComplete: () -> Unit,
     viewModel: OnboardingScreenViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(viewModel) {
+        viewModel.discoverLocalServers()
+    }
+
     Wizard {
         page("welcome") {
             OnboardingWelcomePage(onNextClicked = { goToNextPage() })
@@ -20,7 +24,10 @@ fun OnboardingScreen(
 
         page("server") {
             OnboardingServerPage(
-                viewModel = viewModel,
+                loading = viewModel.loading,
+                isServerValid = viewModel.serverAddress.isNotEmpty(),
+                localServers = viewModel.localServers,
+                validateServer = viewModel::checkServerAddress,
                 onNextClicked = { goToNextPage() },
                 onBackClicked = { goToPreviousPage() },
             )

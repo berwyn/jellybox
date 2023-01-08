@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.berwyn.jellybox.data.ApplicationState
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.api.client.exception.InvalidStatusException
 import org.jellyfin.sdk.api.client.extensions.userApi
@@ -33,8 +35,10 @@ class OnboardingScreenViewModel @Inject constructor(
 
     fun discoverLocalServers() {
         viewModelScope.launch {
-            jellyfin.discovery.discoverLocalServers()
-                .collect { localServers = localServers + it }
+            // For whatever reason, this call doesn't move itself onto the IO dispatcher, so we have to do it manually
+            withContext(Dispatchers.IO) {
+                localServers = jellyfin.discovery.discoverLocalServers().toList()
+            }
         }
     }
 

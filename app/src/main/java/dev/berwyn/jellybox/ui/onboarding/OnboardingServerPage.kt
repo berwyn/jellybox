@@ -10,30 +10,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.ui.previews.ThemePreview
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import org.jellyfin.sdk.createJellyfin
+import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 fun OnboardingServerPage(
-    viewModel: OnboardingScreenViewModel,
+    loading: Boolean,
+    isServerValid: Boolean,
+    localServers: List<ServerDiscoveryInfo>,
+    validateServer: (String) -> Unit,
     onNextClicked: () -> Unit,
     onBackClicked: () -> Unit,
 ) {
     var text by remember { mutableStateOf("") }
 
-    LaunchedEffect(viewModel) {
+    LaunchedEffect(validateServer) {
         snapshotFlow { text }
             .distinctUntilChanged()
             .debounce(250L)
-            .collect(viewModel::checkServerAddress)
-
-        viewModel.discoverLocalServers()
+            .collect(validateServer)
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
@@ -42,7 +47,7 @@ fun OnboardingServerPage(
             onValueChange = { text = it },
             label = { Text("Server address") },
             trailingIcon = {
-                if (viewModel.loading) {
+                if (loading) {
                     CircularProgressIndicator()
                 }
             },
@@ -54,8 +59,12 @@ fun OnboardingServerPage(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        FlowRow() {
-            viewModel.localServers.forEach { server ->
+        FlowRow(
+            modifier = Modifier.fillMaxWidth().weight(1f),
+            mainAxisAlignment = FlowMainAxisAlignment.Start,
+            mainAxisSpacing = 4.dp
+        ) {
+            localServers.forEach { server ->
                 SuggestionChip(
                     onClick = { /*TODO*/ },
                     label = { Text(server.name) }
@@ -68,7 +77,7 @@ fun OnboardingServerPage(
                 Text("Back")
             }
 
-            Button(onClick = onNextClicked, enabled = viewModel.serverAddress.isNotEmpty()) {
+            Button(onClick = onNextClicked, enabled = isServerValid) {
                 Text("Next")
             }
         }
@@ -77,14 +86,16 @@ fun OnboardingServerPage(
 
 @Composable
 @ThemePreview
-fun PreviewOnboardingServerList() {
+fun OnboardingServerPagePreview() {
     JellyboxTheme {
         OnboardingServerPage(
-            // TODO(berwyn): abstract away jellyfin becuse previews are broken and it sucks
-            OnboardingScreenViewModel(
-                createJellyfin { context = LocalContext.current },
-                ApplicationState(jellyfinClient = null)
+            loading = false,
+            isServerValid = false,
+            localServers = persistentListOf(
+                ServerDiscoveryInfo(name = "Foo", address = "https://foo", id = "foo", endpointAddress = null),
+                ServerDiscoveryInfo(name = "Bar", address = "https://bar", id = "bar", endpointAddress = null),
             ),
+            validateServer = { },
             onNextClicked = { },
             onBackClicked = { },
         )
