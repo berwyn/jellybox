@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.berwyn.jellybox.ui.onboarding.onboardingRoutes
-import dev.berwyn.jellybox.ui.placeholder.PlaceholderScreen
 import org.jellyfin.sdk.Jellyfin
 
 @Composable
@@ -16,9 +15,9 @@ fun JellyboxNavigation(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "placeholder") {
-        composable("placeholder") {
-            PlaceholderScreen()
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") {
+            HomeScreen()
         }
 
         onboardingRoutes(navController, jellyfin)

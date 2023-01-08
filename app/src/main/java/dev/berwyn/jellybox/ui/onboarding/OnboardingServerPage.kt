@@ -1,13 +1,17 @@
 package dev.berwyn.jellybox.ui.onboarding
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
+import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.ui.previews.ThemePreview
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.coroutines.FlowPreview
@@ -22,9 +26,6 @@ fun OnboardingServerPage(
     onBackClicked: () -> Unit,
 ) {
     var text by remember { mutableStateOf("") }
-    val inputValid by remember {
-        derivedStateOf { text.isNotEmpty() && viewModel.serverAddress.isNotEmpty() }
-    }
 
     LaunchedEffect(viewModel) {
         snapshotFlow { text }
@@ -45,6 +46,11 @@ fun OnboardingServerPage(
                     CircularProgressIndicator()
                 }
             },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = false,
+            ),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -62,7 +68,7 @@ fun OnboardingServerPage(
                 Text("Back")
             }
 
-            Button(onClick = onNextClicked, enabled = inputValid) {
+            Button(onClick = onNextClicked, enabled = viewModel.serverAddress.isNotEmpty()) {
                 Text("Next")
             }
         }
@@ -75,7 +81,10 @@ fun PreviewOnboardingServerList() {
     JellyboxTheme {
         OnboardingServerPage(
             // TODO(berwyn): abstract away jellyfin becuse previews are broken and it sucks
-            OnboardingScreenViewModel(createJellyfin { context = LocalContext.current }),
+            OnboardingScreenViewModel(
+                createJellyfin { context = LocalContext.current },
+                ApplicationState(jellyfinClient = null)
+            ),
             onNextClicked = { },
             onBackClicked = { },
         )

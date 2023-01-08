@@ -7,6 +7,13 @@ import org.jellyfin.sdk.Jellyfin
 
 fun NavGraphBuilder.onboardingRoutes(controller: NavController, jellyfin: Jellyfin) {
     composable("onboarding") {
-        OnboardingScreen()
+        OnboardingScreen(
+            onSetupComplete = {
+                controller.navigate("home") {
+                    launchSingleTop = true
+                    popUpTo(0)
+                }
+            }
+        )
     }
 }
