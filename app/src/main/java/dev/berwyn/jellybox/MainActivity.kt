@@ -3,18 +3,14 @@ package dev.berwyn.jellybox
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
 import dev.berwyn.jellybox.data.ApplicationState
-import dev.berwyn.jellybox.ui.JellyboxNavigation
-import dev.berwyn.jellybox.ui.previews.ThemePreview
-import dev.berwyn.jellybox.ui.theme.JellyboxTheme
+import dev.berwyn.jellybox.ui.JellyboxApp
+import dev.berwyn.jellybox.ui.util.LocalWidthSizeClass
 import org.jellyfin.sdk.Jellyfin
 import javax.inject.Inject
 
@@ -27,23 +23,17 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appState: ApplicationState
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
-            JellyboxTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    JellyboxNavigation { nav ->
-                        if (appState.jellyfinClient == null) {
-                            nav.navigate("onboarding") {
-                                popUpTo(0)
-                            }
-                        }
-                    }
-                }
+            val sizeClass = calculateWindowSizeClass(activity = this)
+
+            CompositionLocalProvider(LocalWidthSizeClass provides sizeClass.widthSizeClass) {
+                JellyboxApp(hasServersConfigured = appState.hasServersConfigured)
             }
         }
     }

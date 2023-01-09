@@ -41,6 +41,9 @@ class OnboardingScreenViewModel @Inject constructor(
     var loading by mutableStateOf(false)
         private set
 
+    var hasError by mutableStateOf(false)
+        private set
+
     fun discoverLocalServers() {
         viewModelScope.launch {
             // For whatever reason, this call doesn't move itself onto the IO dispatcher, so we have to do it manually
@@ -68,6 +71,8 @@ class OnboardingScreenViewModel @Inject constructor(
 
     fun login(username: String, password: String, onSuccess: () -> Unit = {}, onFailure: () -> Unit = {}) {
         loading = true
+        hasError = false
+
         viewModelScope.launch {
             val api = jellyfin.createApi(baseUrl = serverAddress)
 
@@ -91,9 +96,15 @@ class OnboardingScreenViewModel @Inject constructor(
                         StoreServerCredentialRetention.NONE
                     }
                 )
-
-                loading = false
-                onSuccess()
+                    .onSuccess {
+                        loading = false
+                        onSuccess()
+                    }
+                    .onFailure {
+                        loading = false
+                        hasError = true
+                        onFailure()
+                    }
             } catch (err: InvalidStatusException) {
                 // TODO: Handle properly
                 Log.d("OnboardingScreenViewModel", "Failed to login", err)

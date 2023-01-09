@@ -63,7 +63,7 @@ fun JellyboxTheme(
             darkIcons = !darkTheme
         )
 
-        onDispose {  }
+        onDispose {}
     }
 
     MaterialTheme(
