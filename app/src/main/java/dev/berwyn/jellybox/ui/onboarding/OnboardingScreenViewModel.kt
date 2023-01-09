@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.berwyn.jellybox.data.ApplicationState
+import dev.berwyn.jellybox.domain.StoreServerCredentialRetention
+import dev.berwyn.jellybox.domain.StoreServerUseCase
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -13,6 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.api.client.exception.InvalidStatusException
+import org.jellyfin.sdk.api.client.extensions.brandingApi
+import org.jellyfin.sdk.api.client.extensions.displayPreferencesApi
+import org.jellyfin.sdk.api.client.extensions.systemApi
 import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
@@ -23,12 +28,15 @@ import javax.inject.Inject
 class OnboardingScreenViewModel @Inject constructor(
     private val jellyfin: Jellyfin,
     private val appState: ApplicationState,
+    private val storeServer: StoreServerUseCase,
 ) : ViewModel() {
     var serverAddress by mutableStateOf("")
         private set
 
     var localServers: List<ServerDiscoveryInfo> by mutableStateOf(persistentListOf())
         private set
+
+    var retainCredentials by mutableStateOf(false)
 
     var loading by mutableStateOf(false)
         private set
@@ -62,17 +70,29 @@ class OnboardingScreenViewModel @Inject constructor(
         loading = true
         viewModelScope.launch {
             val api = jellyfin.createApi(baseUrl = serverAddress)
+
             try {
+                val systemInfo by api.systemApi.getPublicSystemInfo()
                 val result by api.userApi.authenticateUserByName(
                     AuthenticateUserByName(username = username, pw = password)
                 )
 
                 api.accessToken = result.accessToken
 
-                appState.jellyfinClient = api
+                appState.setSelectedClient(api)
+
+                storeServer(
+                    name = systemInfo.serverName ?: serverAddress,
+                    uri = serverAddress,
+                    authToken = result.accessToken!!,
+                    credentialRetention = if (retainCredentials) {
+                        StoreServerCredentialRetention.RETAIN
+                    } else {
+                        StoreServerCredentialRetention.NONE
+                    }
+                )
 
                 loading = false
-
                 onSuccess()
             } catch (err: InvalidStatusException) {
                 // TODO: Handle properly

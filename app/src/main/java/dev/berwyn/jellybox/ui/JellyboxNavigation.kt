@@ -10,7 +10,6 @@ import org.jellyfin.sdk.Jellyfin
 
 @Composable
 fun JellyboxNavigation(
-    jellyfin: Jellyfin,
     navGraphReady: @Composable (NavController) -> Unit = {},
 ) {
     val navController = rememberNavController()
@@ -20,7 +19,7 @@ fun JellyboxNavigation(
             HomeScreen()
         }
 
-        onboardingRoutes(navController, jellyfin)
+        onboardingRoutes(navController)
     }
 
     navGraphReady(navController)

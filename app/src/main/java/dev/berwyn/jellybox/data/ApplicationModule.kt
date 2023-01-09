@@ -9,7 +9,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object ApplicationModule {
     @Provides
-    fun provideApplicationState() = ApplicationState(
-        jellyfinClient = null,
-    )
+    fun provideApplicationState() = ApplicationState()
 }

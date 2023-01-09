@@ -22,7 +22,4 @@ object JellyfinModule {
         deviceInfo = androidDevice(appContext)
         context = appContext
     }
-
-    @Provides
-    fun bindsJellyfinState(jellyfin: Jellyfin): JellyfinState = DefaultJellyfinState(jellyfin = jellyfin)
 }

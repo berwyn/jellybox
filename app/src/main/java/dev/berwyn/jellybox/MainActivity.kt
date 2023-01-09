@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    JellyboxNavigation(jellyfin = jellyfin) { nav ->
+                    JellyboxNavigation { nav ->
                         if (appState.jellyfinClient == null) {
                             nav.navigate("onboarding") {
                                 popUpTo(0)
