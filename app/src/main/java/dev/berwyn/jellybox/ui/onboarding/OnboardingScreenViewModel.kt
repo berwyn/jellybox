@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.berwyn.jellybox.data.ApplicationState
+import dev.berwyn.jellybox.domain.DetectNavigationTypeUseCase
 import dev.berwyn.jellybox.domain.StoreServerCredentialRetention
-import dev.berwyn.jellybox.domain.StoreServerUseCase
+import dev.berwyn.jellybox.domain.StoreServerCredentialUseCase
+import dev.berwyn.jellybox.ui.navigation.NavigationType
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -15,8 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.api.client.exception.InvalidStatusException
-import org.jellyfin.sdk.api.client.extensions.brandingApi
-import org.jellyfin.sdk.api.client.extensions.displayPreferencesApi
 import org.jellyfin.sdk.api.client.extensions.systemApi
 import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
@@ -26,9 +26,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingScreenViewModel @Inject constructor(
+    val detectNavigationType: DetectNavigationTypeUseCase,
     private val jellyfin: Jellyfin,
     private val appState: ApplicationState,
-    private val storeServer: StoreServerUseCase,
+    private val storeServer: StoreServerCredentialUseCase,
 ) : ViewModel() {
     var serverAddress by mutableStateOf("")
         private set
@@ -84,8 +85,6 @@ class OnboardingScreenViewModel @Inject constructor(
 
                 api.accessToken = result.accessToken
 
-                appState.setSelectedClient(api)
-
                 storeServer(
                     name = systemInfo.serverName ?: serverAddress,
                     uri = serverAddress,
@@ -96,8 +95,11 @@ class OnboardingScreenViewModel @Inject constructor(
                         StoreServerCredentialRetention.NONE
                     }
                 )
-                    .onSuccess {
+                    .onSuccess { server ->
                         loading = false
+                        appState.selectedServer = server
+                        appState.jellyfinClient?.accessToken = result.accessToken
+
                         onSuccess()
                     }
                     .onFailure {
@@ -112,5 +114,13 @@ class OnboardingScreenViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun hideNavigation() {
+        appState.navigationType = NavigationType.None
+    }
+
+    fun restoreNavigation(navigationType: NavigationType) {
+        appState.navigationType = navigationType
     }
 }

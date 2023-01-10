@@ -1,37 +1,37 @@
 package dev.berwyn.jellybox.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.*
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import dev.berwyn.jellybox.ui.navigation.JellyboxNavBar
-import dev.berwyn.jellybox.ui.navigation.JellyboxNavRail
+import dev.berwyn.jellybox.data.local.JellyfinServer
+import dev.berwyn.jellybox.domain.SelectActiveServerUseCase
+import dev.berwyn.jellybox.ui.navigation.*
 import dev.berwyn.jellybox.ui.onboarding.onboardingRoutes
-import dev.berwyn.jellybox.ui.previews.DevicePreview
-import dev.berwyn.jellybox.ui.previews.ThemePreview
-import dev.berwyn.jellybox.ui.theme.JellyboxTheme
-import dev.berwyn.jellybox.ui.util.LocalWidthSizeClass
+import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 fun JellyboxNavigation(
-    navGraphReady: @Composable (NavController) -> Unit = {},
+    servers: List<JellyfinServer>,
+    selectActiveServer: SelectActiveServerUseCase,
+    navigationType: NavigationType,
+    navigationState: NavigationState = rememberNavigationState(),
 ) {
-    val navController = rememberNavController()
-    val widthSizeClass = LocalWidthSizeClass.current
-
     Scaffold(
         bottomBar = {
-            if (widthSizeClass == WindowWidthSizeClass.Compact) {
-                JellyboxNavBar()
+            if (navigationType == NavigationType.Bar) {
+                JellyboxNavBar(
+                    destinations = navigationState.topLevelDestinations,
+                    onNavigateToDestination = navigationState::navigateToTopLevelDestination,
+                    currentDestination = navigationState.currentDestination,
+                )
             }
         }
     ) { padding ->
@@ -42,33 +42,47 @@ fun JellyboxNavigation(
                 .consumedWindowInsets(padding)
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
-            if (widthSizeClass != WindowWidthSizeClass.Compact) {
-                JellyboxNavRail()
+            if (navigationType == NavigationType.Rail) {
+                JellyboxNavRail(
+                    servers = servers,
+                    selectActiveServer = selectActiveServer,
+                    destinations = navigationState.topLevelDestinations,
+                    onNavigateToDestination = navigationState::navigateToTopLevelDestination,
+                    currentDestination = navigationState.currentDestination,
+                )
             }
 
             Column(modifier = Modifier.fillMaxSize()) {
-                NavHost(navController = navController, startDestination = "home", modifier = Modifier.weight(1f)) {
+                navigationState.currentTopLevelDestination?.let { destination ->
+                    TopAppBar(
+                        title = { Text(stringResource(destination.titleTextId)) },
+                        navigationIcon = {
+                            ServerSelectionMenu(
+                                servers = servers,
+                                onServerSelected = { server ->
+                                    navigationState.coroutineScope.launch {
+                                        selectActiveServer(server)
+                                    }
+                                },
+                            )
+                        }
+                    )
+                }
+
+                NavHost(
+                    navController = navigationState.navController,
+                    startDestination = "home",
+                    modifier = Modifier.weight(1f)
+                ) {
                     composable("home") {
                         HomeScreen()
                     }
 
-                    onboardingRoutes(navController)
+                    onboardingRoutes(navigationState.navController)
                 }
 
 
             }
         }
-    }
-
-    navGraphReady(navController)
-}
-
-@Composable
-@ThemePreview
-@DevicePreview
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-fun JellyboxNavigationPreview() {
-    JellyboxTheme {
-        JellyboxNavigation()
     }
 }

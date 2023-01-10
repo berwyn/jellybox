@@ -6,7 +6,7 @@ import dev.berwyn.jellybox.data.local.JellyfinServer
 import dev.berwyn.jellybox.security.SecurePrefs
 import javax.inject.Inject
 
-class StoreServerUseCase @Inject constructor(
+class StoreServerCredentialUseCase @Inject constructor(
     @SecurePrefs private val securePrefs: SharedPreferences,
     private val jellyboxDatabase: JellyboxDatabase,
 ) {

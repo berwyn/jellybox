@@ -9,6 +9,16 @@ fun OnboardingScreen(
     onSetupComplete: () -> Unit,
     viewModel: OnboardingScreenViewModel = hiltViewModel(),
 ) {
+    val navigationType = viewModel.detectNavigationType()
+
+    DisposableEffect(Unit) {
+        viewModel.hideNavigation()
+
+        onDispose {
+            viewModel.restoreNavigation(navigationType)
+        }
+    }
+
     LaunchedEffect(viewModel) {
         viewModel.discoverLocalServers()
     }

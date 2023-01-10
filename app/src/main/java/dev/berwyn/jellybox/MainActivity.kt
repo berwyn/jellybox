@@ -9,8 +9,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
 import dev.berwyn.jellybox.data.ApplicationState
+import dev.berwyn.jellybox.domain.DetectNavigationTypeUseCase
+import dev.berwyn.jellybox.domain.SelectActiveServerUseCase
 import dev.berwyn.jellybox.ui.JellyboxApp
-import dev.berwyn.jellybox.ui.util.LocalWidthSizeClass
+import dev.berwyn.jellybox.ui.util.LocalActivity
 import org.jellyfin.sdk.Jellyfin
 import javax.inject.Inject
 
@@ -23,17 +25,27 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appState: ApplicationState
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Inject
+    lateinit var selectActiveServer: SelectActiveServerUseCase
+
+    @Inject
+    lateinit var detectNavigationType: DetectNavigationTypeUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            val sizeClass = calculateWindowSizeClass(activity = this)
+            CompositionLocalProvider(LocalActivity provides this) {
+                appState.navigationType = detectNavigationType()
 
-            CompositionLocalProvider(LocalWidthSizeClass provides sizeClass.widthSizeClass) {
-                JellyboxApp(hasServersConfigured = appState.hasServersConfigured)
+                JellyboxApp(
+                    hasServersConfigured = appState.hasServersConfigured,
+                    selectActiveServer = selectActiveServer,
+                    navigationType = appState.navigationType,
+                    savedServers = appState.savedServers,
+                )
             }
         }
     }

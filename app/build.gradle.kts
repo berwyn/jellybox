@@ -94,12 +94,14 @@ dependencies {
     implementation("androidx.room:room-runtime:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")
     implementation("androidx.room:room-paging:2.4.3")
+    implementation("androidx.tracing:tracing-ktx:1.1.0")
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
+    implementation("androidx.compose.runtime:runtime-tracing:1.0.0-alpha01")
 
     implementation("org.jellyfin.sdk:jellyfin-core:1.4.0")
 
