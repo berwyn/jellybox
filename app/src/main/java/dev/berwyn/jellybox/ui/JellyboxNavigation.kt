@@ -22,11 +22,12 @@ fun JellyboxNavigation(
     servers: List<JellyfinServer>,
     selectActiveServer: SelectActiveServerUseCase,
     navigationType: NavigationType,
+    navigationHidden: Boolean,
     navigationState: NavigationState = rememberNavigationState(),
 ) {
     Scaffold(
         bottomBar = {
-            if (navigationType == NavigationType.Bar) {
+            if (navigationType == NavigationType.Bar && !navigationHidden) {
                 JellyboxNavBar(
                     destinations = navigationState.topLevelDestinations,
                     onNavigateToDestination = navigationState::navigateToTopLevelDestination,
@@ -42,7 +43,7 @@ fun JellyboxNavigation(
                 .consumedWindowInsets(padding)
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
-            if (navigationType == NavigationType.Rail) {
+            if (navigationType == NavigationType.Rail && !navigationHidden) {
                 JellyboxNavRail(
                     servers = servers,
                     selectActiveServer = selectActiveServer,

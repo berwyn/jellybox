@@ -27,7 +27,10 @@ fun ServerSelectionMenu(
             servers.forEach { server ->
                 DropdownMenuItem(
                     text = { Text(server.name) },
-                    onClick = { onServerSelected(server) },
+                    onClick = {
+                        onServerSelected(server)
+                        isOpen = false
+                    },
                 )
             }
         }
@@ -39,7 +42,7 @@ fun ServerSelectionMenu(
 fun ServerSelectionMenuPreview() {
     ServerSelectionMenu(
         servers = persistentListOf(
-            JellyfinServer.newServer("Test", "https://test.server/"),
+            JellyfinServer.create("Test", "https://test.server/"),
         ),
         onServerSelected = { }
     )

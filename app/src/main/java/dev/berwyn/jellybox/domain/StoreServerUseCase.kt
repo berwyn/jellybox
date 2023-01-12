@@ -6,15 +6,17 @@ import dev.berwyn.jellybox.data.local.JellyfinServer
 import dev.berwyn.jellybox.security.SecurePrefs
 import javax.inject.Inject
 
-class StoreServerCredentialUseCase @Inject constructor(
+class StoreServerUseCase @Inject constructor(
     @SecurePrefs private val securePrefs: SharedPreferences,
     private val jellyboxDatabase: JellyboxDatabase,
+    private val selectActiveServer: SelectActiveServerUseCase,
 ) {
     suspend operator fun invoke(
         name: String,
         uri: String,
         authToken: String,
-        credentialRetention: StoreServerCredentialRetention = StoreServerCredentialRetention.NONE
+        credentialRetention: StoreServerCredentialRetention = StoreServerCredentialRetention.NONE,
+        markActive: Boolean = true,
     ): Result<JellyfinServer> {
         if (credentialRetention == StoreServerCredentialRetention.RETAIN) {
             val prefKey = "server/${uri}"
@@ -34,8 +36,9 @@ class StoreServerCredentialUseCase @Inject constructor(
         return Result.runCatching {
             jellyboxDatabase
                 .serverDao()
-                .storeServer(JellyfinServer.newServer(name, uri))
+                .storeServer(JellyfinServer.create(name, uri))
                 .let { id -> jellyboxDatabase.serverDao().findById(id) }
+                .apply { if (markActive) selectActiveServer(this) }
         }
     }
 }

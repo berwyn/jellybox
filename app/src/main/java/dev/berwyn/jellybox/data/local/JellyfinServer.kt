@@ -8,15 +8,21 @@ import androidx.room.PrimaryKey
 data class JellyfinServer(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
+
     @ColumnInfo(name = "name")
     val name: String,
+
     @ColumnInfo(name = "uri")
     val uri: String,
+
     @ColumnInfo(name = "is_default")
-    val isDefault: Boolean = false,
+    var isDefault: Boolean = false,
+
+    @ColumnInfo(name = "is_selected")
+    var isSelected: Boolean = false,
 ) {
     companion object {
-        fun newServer(name: String, uri: String) = JellyfinServer(
+        fun create(name: String, uri: String) = JellyfinServer(
             id = 0,
             name = name,
             uri = uri,

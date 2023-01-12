@@ -60,6 +60,8 @@ kapt {
 
 ksp {
     arg("room.schemaLocation", File(projectDir, "schemas").path)
+    arg("room.incremental", "true")
+    arg("room.expandProjection", "true")
 }
 
 hilt {
@@ -68,7 +70,7 @@ hilt {
 
 dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.44.2")
-    ksp("androidx.room:room-compiler:2.4.3")
+    ksp("androidx.room:room-compiler:2.5.0")
 
     val composeBom = platform("androidx.compose:compose-bom:2022.12.00")
 
@@ -91,9 +93,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.security:security-crypto:1.0.0")
-    implementation("androidx.room:room-runtime:2.4.3")
-    implementation("androidx.room:room-ktx:2.4.3")
-    implementation("androidx.room:room-paging:2.4.3")
+    implementation("androidx.room:room-runtime:2.5.0")
+    implementation("androidx.room:room-ktx:2.5.0")
+    implementation("androidx.room:room-paging:2.5.0")
     implementation("androidx.tracing:tracing-ktx:1.1.0")
 
     implementation("androidx.compose.ui:ui")

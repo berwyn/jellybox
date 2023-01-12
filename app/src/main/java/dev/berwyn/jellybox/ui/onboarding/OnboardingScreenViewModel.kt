@@ -1,18 +1,18 @@
 package dev.berwyn.jellybox.ui.onboarding
 
 import android.util.Log
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.berwyn.jellybox.data.ApplicationState
-import dev.berwyn.jellybox.domain.DetectNavigationTypeUseCase
 import dev.berwyn.jellybox.domain.StoreServerCredentialRetention
-import dev.berwyn.jellybox.domain.StoreServerCredentialUseCase
-import dev.berwyn.jellybox.ui.navigation.NavigationType
+import dev.berwyn.jellybox.domain.StoreServerUseCase
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.Jellyfin
@@ -26,10 +26,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingScreenViewModel @Inject constructor(
-    val detectNavigationType: DetectNavigationTypeUseCase,
     private val jellyfin: Jellyfin,
     private val appState: ApplicationState,
-    private val storeServer: StoreServerCredentialUseCase,
+    private val storeServer: StoreServerUseCase,
 ) : ViewModel() {
     var serverAddress by mutableStateOf("")
         private set
@@ -95,16 +94,15 @@ class OnboardingScreenViewModel @Inject constructor(
                         StoreServerCredentialRetention.NONE
                     }
                 )
-                    .onSuccess { server ->
+                    .onSuccess {
                         loading = false
-                        appState.selectedServer = server
-                        appState.jellyfinClient?.accessToken = result.accessToken
 
                         onSuccess()
                     }
                     .onFailure {
                         loading = false
                         hasError = true
+
                         onFailure()
                     }
             } catch (err: InvalidStatusException) {
@@ -117,10 +115,10 @@ class OnboardingScreenViewModel @Inject constructor(
     }
 
     fun hideNavigation() {
-        appState.navigationType = NavigationType.None
+        appState.navigationHidden = true
     }
 
-    fun restoreNavigation(navigationType: NavigationType) {
-        appState.navigationType = navigationType
+    fun restoreNavigation() {
+        appState.navigationHidden = true
     }
 }

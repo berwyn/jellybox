@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import dev.berwyn.jellybox.data.local.JellyfinServer
 import dev.berwyn.jellybox.domain.SelectActiveServerUseCase
 import dev.berwyn.jellybox.ui.navigation.NavigationType
@@ -15,15 +16,15 @@ import dev.berwyn.jellybox.ui.navigation.rememberNavigationState
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun JellyboxApp(
     navigationType: NavigationType,
-    hasServersConfigured: Flow<Boolean>,
-    savedServers: Flow<List<JellyfinServer>>,
-    selectActiveServer: SelectActiveServerUseCase,
+    navigationHidden: Boolean,
+    viewModel: JellyboxAppViewModel = hiltViewModel()
 ) {
-    val servers by savedServers.collectAsState(initial = listOf())
+    val servers by viewModel.servers.collectAsState(initial = listOf())
 
     JellyboxTheme {
         Surface(
@@ -35,19 +36,10 @@ fun JellyboxApp(
             JellyboxNavigation(
                 navigationType = navigationType,
                 navigationState = navState,
+                navigationHidden = navigationHidden,
                 servers = servers,
-                selectActiveServer = selectActiveServer,
+                selectActiveServer = viewModel.selectActiveServer,
             )
-
-            LaunchedEffect(navState) {
-                val hasServers = hasServersConfigured.first()
-
-                if (!hasServers) {
-                    navState.goToOnboarding()
-                } else {
-                    selectActiveServer(useDefault = true)
-                }
-            }
         }
     }
 }
