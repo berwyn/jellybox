@@ -40,22 +40,28 @@ class HomeScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            client
+                .onEach { viewsStateFlow.emit(ViewsState.Loading) }
+                .combine(user) { client, user ->
+                    client ?: return@combine null
+                    user ?: return@combine null
 
-        client
-            .onEach { viewsStateFlow.emit(ViewsState.Loading) }
-            .takeWhile { it != null }
-            .combine(user.takeWhile { it != null }) { client, user ->
-                client!!.userViewsApi.getUserViews(user!!.id).content.items
-            }
-            .takeWhile { it != null }
-            .catch { viewsStateFlow.emit(ViewsState.Error(it)) }
-            .collect { viewsStateFlow.emit(ViewsState.Success(it!!)) }
+                    client.userViewsApi.getUserViews(user.id).content.items
+                }
+                .catch { viewsStateFlow.emit(ViewsState.Error(it)) }
+                .collect {
+                    if (it != null)
+                        viewsStateFlow.emit(ViewsState.Success(it))
+                    else
+                        viewsStateFlow.emit(ViewsState.NotConfigured)
+                }
         }
     }
 }
 
 sealed class ViewsState {
     object Loading : ViewsState()
+    object NotConfigured : ViewsState()
     data class Success(val views: List<BaseItemDto>) : ViewsState()
     data class Error(val reason: Throwable) : ViewsState()
 }

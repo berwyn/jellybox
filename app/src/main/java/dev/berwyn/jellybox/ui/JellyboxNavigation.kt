@@ -40,7 +40,7 @@ fun JellyboxNavigation(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .consumedWindowInsets(padding)
+                .consumeWindowInsets(padding)
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
             if (navigationType == NavigationType.Rail && !navigationHidden) {
@@ -76,13 +76,13 @@ fun JellyboxNavigation(
                     modifier = Modifier.weight(1f)
                 ) {
                     composable("home") {
-                        HomeScreen()
+                        HomeScreen(
+                            onOnboardingRequested = navigationState::goToOnboarding
+                        )
                     }
 
                     onboardingRoutes(navigationState.navController)
                 }
-
-
             }
         }
     }
