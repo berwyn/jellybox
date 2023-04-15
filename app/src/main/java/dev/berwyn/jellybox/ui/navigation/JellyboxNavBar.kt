@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
-import dev.berwyn.jellybox.ui.previews.ThemePreview
+import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
+import dev.berwyn.jellybox.ui.previews.ThemePreviews
+import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 
 @Composable
 fun JellyboxNavBar(
@@ -36,5 +38,20 @@ fun JellyboxNavBar(
                 label = { Text(stringResource(destination.titleTextId)) }
             )
         }
+    }
+}
+
+@Composable
+@ThemePreviews
+@DynamicColourPreviews
+private fun JellyboxNavBarPreview() {
+    JellyboxTheme {
+        JellyboxNavBar(
+            destinations = listOf(
+                TopLevelDestination.HOME,
+            ),
+            onNavigateToDestination = {},
+            currentDestination = null,
+        )
     }
 }

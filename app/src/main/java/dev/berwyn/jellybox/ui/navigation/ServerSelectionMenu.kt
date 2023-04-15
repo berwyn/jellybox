@@ -7,7 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import dev.berwyn.jellybox.data.local.JellyfinServer
-import dev.berwyn.jellybox.ui.previews.ThemePreview
+import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
@@ -38,7 +38,7 @@ fun ServerSelectionMenu(
 }
 
 @Composable
-@ThemePreview
+@ThemePreviews
 fun ServerSelectionMenuPreview() {
     ServerSelectionMenu(
         servers = persistentListOf(

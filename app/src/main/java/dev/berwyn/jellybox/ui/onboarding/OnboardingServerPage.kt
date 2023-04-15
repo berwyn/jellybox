@@ -6,20 +6,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import dev.berwyn.jellybox.data.ApplicationState
-import dev.berwyn.jellybox.ui.previews.ThemePreview
+import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
-import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 
 @Composable
@@ -85,7 +81,7 @@ fun OnboardingServerPage(
 }
 
 @Composable
-@ThemePreview
+@ThemePreviews
 fun OnboardingServerPagePreview() {
     JellyboxTheme {
         OnboardingServerPage(

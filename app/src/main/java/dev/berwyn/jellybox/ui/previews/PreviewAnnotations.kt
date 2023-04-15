@@ -2,6 +2,7 @@ package dev.berwyn.jellybox.ui.previews
 
 import android.content.res.Configuration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 
 @Preview(
     name = "Dark Theme",
@@ -15,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true,
 )
-annotation class ThemePreview
+annotation class ThemePreviews
 
 @Preview(
     name = "Phone",
@@ -33,3 +34,9 @@ annotation class ThemePreview
     device = "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480"
 )
 annotation class DevicePreview
+
+@Preview(name = "Dynamic Colour - Blue", wallpaper = Wallpapers.BLUE_DOMINATED_EXAMPLE)
+@Preview(name = "Dynamic Colour - Red", wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE)
+@Preview(name = "Dynamic Colour - Green", wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE)
+@Preview(name = "Dynamic Colour - Yellow", wallpaper = Wallpapers.YELLOW_DOMINATED_EXAMPLE)
+annotation class DynamicColourPreviews

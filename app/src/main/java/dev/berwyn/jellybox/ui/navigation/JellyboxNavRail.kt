@@ -11,13 +11,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import dev.berwyn.jellybox.data.local.JellyfinServer
 import dev.berwyn.jellybox.domain.SelectActiveServerUseCase
-import dev.berwyn.jellybox.ui.previews.ThemePreview
+import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
+import dev.berwyn.jellybox.ui.previews.ThemePreviews
+import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.coroutines.launch
 
 @Composable
 fun JellyboxNavRail(
     servers: List<JellyfinServer>,
-    selectActiveServer: SelectActiveServerUseCase,
+    selectActiveServer: (JellyfinServer) -> Unit,
     destinations: List<TopLevelDestination>,
     onNavigateToDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,
@@ -30,11 +32,7 @@ fun JellyboxNavRail(
         header = {
             ServerSelectionMenu(
                 servers = servers,
-                onServerSelected = { server ->
-                    coroutineScope.launch {
-                        selectActiveServer(server)
-                    }
-                },
+                onServerSelected = selectActiveServer,
             )
         }
     ) {
@@ -56,5 +54,22 @@ fun JellyboxNavRail(
                 label = { Text(stringResource(destination.titleTextId)) }
             )
         }
+    }
+}
+
+@Composable
+@ThemePreviews
+@DynamicColourPreviews
+private fun JellyboxNavRailPreview() {
+    JellyboxTheme {
+        JellyboxNavRail(
+            servers = listOf(),
+            selectActiveServer = {},
+            destinations = listOf(
+                TopLevelDestination.HOME
+            ),
+            onNavigateToDestination = {},
+            currentDestination = null,
+        )
     }
 }

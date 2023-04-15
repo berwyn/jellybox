@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
@@ -25,6 +26,8 @@ fun JellyboxNavigation(
     navigationHidden: Boolean,
     navigationState: NavigationState = rememberNavigationState(),
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         bottomBar = {
             if (navigationType == NavigationType.Bar && !navigationHidden) {
@@ -46,7 +49,11 @@ fun JellyboxNavigation(
             if (navigationType == NavigationType.Rail && !navigationHidden) {
                 JellyboxNavRail(
                     servers = servers,
-                    selectActiveServer = selectActiveServer,
+                    selectActiveServer = { server ->
+                        coroutineScope.launch {
+                            selectActiveServer(server)
+                        }
+                    },
                     destinations = navigationState.topLevelDestinations,
                     onNavigateToDestination = navigationState::navigateToTopLevelDestination,
                     currentDestination = navigationState.currentDestination,

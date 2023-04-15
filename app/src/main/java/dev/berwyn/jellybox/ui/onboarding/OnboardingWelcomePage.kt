@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.berwyn.jellybox.ui.previews.ThemePreview
+import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 
 @Composable
@@ -44,7 +44,7 @@ fun OnboardingWelcomePage(
 }
 
 @Composable
-@ThemePreview
+@ThemePreviews
 fun OnboardingWelcomePreview() {
     JellyboxTheme {
         OnboardingWelcomePage(onNextClicked = {})

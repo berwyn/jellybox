@@ -12,7 +12,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import dev.berwyn.jellybox.ui.previews.ThemePreview
+import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 
 @Composable
@@ -96,7 +96,7 @@ fun OnboardingCredentialsPage(
 }
 
 @Composable
-@ThemePreview
+@ThemePreviews
 fun OnboardingCredentialsPagePreview() {
     JellyboxTheme {
         OnboardingCredentialsPage(
