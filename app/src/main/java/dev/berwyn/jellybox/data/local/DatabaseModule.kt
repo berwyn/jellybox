@@ -1,28 +1,23 @@
 package dev.berwyn.jellybox.data.local
 
-import android.content.Context
 import androidx.room.Room
-import dagger.Binds
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import dev.berwyn.jellybox.data.DatabaseJellyfinServerRepository
 import dev.berwyn.jellybox.data.JellyfinServerRepository
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-    @Provides
-    fun providesJellyboxDatabase(
-        @ApplicationContext context: Context
-    ): JellyboxDatabase = Room.databaseBuilder(
-        context,
-        JellyboxDatabase::class.java,
-        "jellybox"
-    ).build()
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            JellyboxDatabase::class.java,
+            "jellybox"
+        ).build()
+    }
 
-    @Provides
-    fun bindsServerRepository(impl: DatabaseJellyfinServerRepository): JellyfinServerRepository = impl
+    singleOf(::DatabaseJellyfinServerRepository) {
+        bind<JellyfinServerRepository>()
+    }
 }

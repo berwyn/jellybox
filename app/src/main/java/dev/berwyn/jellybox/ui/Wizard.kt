@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.*
+import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -118,7 +119,8 @@ fun Wizard(
 
 @Composable
 @ThemePreviews
-fun WizardPreview() {
+@DynamicColourPreviews
+private fun WizardPreview() {
     JellyboxTheme {
         Wizard {
             page("1") {

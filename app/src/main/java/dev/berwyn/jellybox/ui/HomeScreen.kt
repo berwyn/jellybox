@@ -1,7 +1,6 @@
 package dev.berwyn.jellybox.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -12,12 +11,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
-import dev.berwyn.jellybox.data.ApplicationState
+import org.koin.compose.koinInject
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = hiltViewModel(),
+    viewModel: HomeScreenViewModel = koinInject(),
     onOnboardingRequested: () -> Unit = {},
 ) {
     val serverName by viewModel.selectedServerName.collectAsState(initial = null)

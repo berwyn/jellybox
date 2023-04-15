@@ -1,8 +1,6 @@
 plugins {
-    kotlin("kapt")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
 }
 
@@ -54,22 +52,13 @@ kotlin {
     jvmToolchain(17)
 }
 
-kapt {
-    correctErrorTypes = true
-}
-
 ksp {
     arg("room.schemaLocation", File(projectDir, "schemas").path)
     arg("room.incremental", "true")
     arg("room.expandProjection", "true")
 }
 
-hilt {
-    enableAggregatingTask = true
-}
-
 dependencies {
-    kapt("com.google.dagger:hilt-android-compiler:2.45")
     ksp("androidx.room:room-compiler:2.5.1")
 
     val composeBom = platform("androidx.compose:compose-bom:2023.04.00")
@@ -79,7 +68,9 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
-    implementation("com.google.dagger:hilt-android:2.45")
+    implementation("io.insert-koin:koin-android:3.4.0")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.3")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:3.4.3")
 
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -115,9 +106,12 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.1")
+    testImplementation("io.insert-koin:koin-test:3.4.0")
+    testImplementation("io.insert-koin:koin-test-junit4:3.4.0")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("io.insert-koin:koin-test:3.4.0")
 
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 

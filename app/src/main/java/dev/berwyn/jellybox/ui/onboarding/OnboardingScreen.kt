@@ -1,13 +1,15 @@
 package dev.berwyn.jellybox.ui.onboarding
 
-import androidx.compose.runtime.*
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import dev.berwyn.jellybox.ui.Wizard
+import org.koin.compose.koinInject
 
 @Composable
 fun OnboardingScreen(
     onSetupComplete: () -> Unit,
-    viewModel: OnboardingScreenViewModel = hiltViewModel(),
+    viewModel: OnboardingScreenViewModel = koinInject(),
 ) {
     DisposableEffect(Unit) {
         viewModel.hideNavigation()

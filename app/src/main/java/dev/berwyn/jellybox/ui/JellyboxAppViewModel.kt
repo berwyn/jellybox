@@ -9,8 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
 
-@HiltViewModel
-class JellyboxAppViewModel @Inject constructor(
+class JellyboxAppViewModel(
     val selectActiveServer: SelectActiveServerUseCase,
     serverRepository: JellyfinServerRepository,
 ): ViewModel() {

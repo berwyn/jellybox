@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.domain.StoreServerCredentialRetention
 import dev.berwyn.jellybox.domain.StoreServerUseCase
@@ -22,10 +21,8 @@ import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
-import javax.inject.Inject
 
-@HiltViewModel
-class OnboardingScreenViewModel @Inject constructor(
+class OnboardingScreenViewModel(
     private val jellyfin: Jellyfin,
     private val appState: ApplicationState,
     private val storeServer: StoreServerUseCase,
@@ -56,16 +53,20 @@ class OnboardingScreenViewModel @Inject constructor(
     fun checkServerAddress(address: String) {
         loading = true
         viewModelScope.launch {
-            val servers =
-                jellyfin.discovery.getRecommendedServers(address, RecommendedServerInfoScore.GOOD)
+            try {
+                val servers =
+                    jellyfin.discovery.getRecommendedServers(address, RecommendedServerInfoScore.GOOD)
 
-            serverAddress = if (servers.isNotEmpty()) {
-                servers.first().address
-            } else {
-                ""
+                serverAddress = if (servers.isNotEmpty()) {
+                    servers.first().address
+                } else {
+                    ""
+                }
+            } catch (iae: IllegalArgumentException) {
+                // Do nothing, URL wasn't valid
+            } finally {
+                loading = false
             }
-
-            loading = false
         }
     }
 

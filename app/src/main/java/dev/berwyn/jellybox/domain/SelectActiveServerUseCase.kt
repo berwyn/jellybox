@@ -2,9 +2,8 @@ package dev.berwyn.jellybox.domain
 
 import dev.berwyn.jellybox.data.local.JellyboxDatabase
 import dev.berwyn.jellybox.data.local.JellyfinServer
-import javax.inject.Inject
 
-class SelectActiveServerUseCase @Inject constructor(
+class SelectActiveServerUseCase(
     private val database: JellyboxDatabase,
 ) {
     suspend operator fun invoke(server: JellyfinServer? = null, useDefault: Boolean = false) {

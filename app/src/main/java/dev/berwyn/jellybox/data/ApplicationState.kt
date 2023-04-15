@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ApplicationState @Inject constructor() {
+class ApplicationState {
     var navigationType: NavigationType by mutableStateOf(NavigationType.Bar)
     var navigationHidden: Boolean by mutableStateOf(false)
 }

@@ -12,7 +12,7 @@ interface JellyfinServerRepository {
 }
 
 @Singleton
-class DatabaseJellyfinServerRepository @Inject constructor(
+class DatabaseJellyfinServerRepository(
     private val database: JellyboxDatabase,
 ): JellyfinServerRepository {
     override fun getServers(): Flow<List<JellyfinServer>> = database.serverDao().getAll()

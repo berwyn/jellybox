@@ -1,34 +1,26 @@
 package dev.berwyn.jellybox.security
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.security.keystore.KeyGenParameterSpec
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Qualifier
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class SecurePrefs
+private const val SECURE_PREFS_NAME = "secure"
+val SecurePrefs = named(SECURE_PREFS_NAME)
 
-@Module
-@InstallIn(SingletonComponent::class)
-object SecurityModule {
-    @Provides @SecurePrefs
-    fun proviesEncryptedSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+val securityModule = module {
+    single(SecurePrefs) {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
 
-        return EncryptedSharedPreferences.create(
+        EncryptedSharedPreferences.create(
             "encrypted_prefs",
             masterKeyAlias,
-            context,
+            androidContext(),
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
-    }
+    } bind SharedPreferences::class
 }

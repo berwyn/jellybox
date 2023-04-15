@@ -3,11 +3,9 @@ package dev.berwyn.jellybox.domain
 import android.content.SharedPreferences
 import dev.berwyn.jellybox.data.local.JellyboxDatabase
 import dev.berwyn.jellybox.data.local.JellyfinServer
-import dev.berwyn.jellybox.security.SecurePrefs
-import javax.inject.Inject
 
-class StoreServerUseCase @Inject constructor(
-    @SecurePrefs private val securePrefs: SharedPreferences,
+class StoreServerUseCase(
+    private val securePrefs: SharedPreferences,
     private val jellyboxDatabase: JellyboxDatabase,
     private val selectActiveServer: SelectActiveServerUseCase,
 ) {
