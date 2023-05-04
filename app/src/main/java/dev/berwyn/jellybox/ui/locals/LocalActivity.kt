@@ -1,4 +1,4 @@
-package dev.berwyn.jellybox.ui.util
+package dev.berwyn.jellybox.ui.locals
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.staticCompositionLocalOf

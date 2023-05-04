@@ -1,6 +1,23 @@
 package dev.berwyn.jellybox.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -13,7 +30,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import dev.berwyn.jellybox.data.local.JellyfinServer
 import dev.berwyn.jellybox.domain.SelectActiveServerUseCase
-import dev.berwyn.jellybox.ui.navigation.*
+import dev.berwyn.jellybox.ui.media.mediaRoutes
+import dev.berwyn.jellybox.ui.navigation.JellyboxNavBar
+import dev.berwyn.jellybox.ui.navigation.JellyboxNavRail
+import dev.berwyn.jellybox.ui.navigation.NavigationState
+import dev.berwyn.jellybox.ui.navigation.NavigationType
+import dev.berwyn.jellybox.ui.navigation.ServerSelectionMenu
+import dev.berwyn.jellybox.ui.navigation.rememberNavigationState
 import dev.berwyn.jellybox.ui.onboarding.onboardingRoutes
 import kotlinx.coroutines.launch
 
@@ -30,9 +53,13 @@ fun JellyboxNavigation(
 
     Scaffold(
         bottomBar = {
-            if (navigationType == NavigationType.Bar && !navigationHidden) {
+            AnimatedVisibility(
+                visible = navigationType == NavigationType.Bar && !navigationHidden,
+                enter = slideInVertically() + fadeIn(),
+                exit = fadeOut() + slideOutVertically(),
+            ) {
                 JellyboxNavBar(
-                    destinations = navigationState.topLevelDestinations,
+                    destinations = enumValues(),
                     onNavigateToDestination = navigationState::navigateToTopLevelDestination,
                     currentDestination = navigationState.currentDestination,
                 )
@@ -46,7 +73,11 @@ fun JellyboxNavigation(
                 .consumeWindowInsets(padding)
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
-            if (navigationType == NavigationType.Rail && !navigationHidden) {
+            AnimatedVisibility(
+                visible = navigationType == NavigationType.Rail && !navigationHidden,
+                enter = slideInHorizontally() + fadeIn(),
+                exit = fadeOut() + slideOutHorizontally(),
+            ) {
                 JellyboxNavRail(
                     servers = servers,
                     selectActiveServer = { server ->
@@ -54,7 +85,7 @@ fun JellyboxNavigation(
                             selectActiveServer(server)
                         }
                     },
-                    destinations = navigationState.topLevelDestinations,
+                    destinations = enumValues(),
                     onNavigateToDestination = navigationState::navigateToTopLevelDestination,
                     currentDestination = navigationState.currentDestination,
                 )
@@ -65,14 +96,16 @@ fun JellyboxNavigation(
                     TopAppBar(
                         title = { Text(stringResource(destination.titleTextId)) },
                         navigationIcon = {
-                            ServerSelectionMenu(
-                                servers = servers,
-                                onServerSelected = { server ->
-                                    navigationState.coroutineScope.launch {
-                                        selectActiveServer(server)
-                                    }
-                                },
-                            )
+                            AnimatedVisibility(visible = navigationType == NavigationType.Bar) {
+                                ServerSelectionMenu(
+                                    servers = servers,
+                                    onServerSelected = { server ->
+                                        navigationState.coroutineScope.launch {
+                                            selectActiveServer(server)
+                                        }
+                                    },
+                                )
+                            }
                         }
                     )
                 }
@@ -89,6 +122,7 @@ fun JellyboxNavigation(
                     }
 
                     onboardingRoutes(navigationState.navController)
+                    mediaRoutes()
                 }
             }
         }

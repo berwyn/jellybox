@@ -1,7 +1,11 @@
 package dev.berwyn.jellybox.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -10,9 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.pager.*
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
@@ -27,7 +31,7 @@ data class WizardPage(
 )
 
 class WizardBuilder {
-    var pages: MutableList<WizardPage> = mutableListOf()
+    internal var pages: MutableList<WizardPage> = mutableListOf()
 
     fun page(name: String, page: @Composable WizardScope.() -> Unit) {
         pages.add(WizardPage(name, page))
@@ -40,38 +44,59 @@ fun buildWizardPageList(builder: WizardBuilder, pageFactory: WizardBuilder.() ->
     return builder.pages.toImmutableList()
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 class WizardScope(
     private val commandScope: CoroutineScope,
     private val pagerState: PagerState,
 ) {
     fun goToNextPage() {
-        val nextPage = pagerState.currentPage + 1
-
-        if (nextPage >= pagerState.pageCount) {
+        if (!pagerState.canScrollForward) {
             return
         }
 
         commandScope.launch {
-            pagerState.scrollToPage(nextPage)
+            pagerState.scrollToPage(pagerState.currentPage + 1)
         }
     }
 
     fun goToPreviousPage() {
-        val prevPage = pagerState.currentPage - 1
-
-        if (prevPage < 0) {
+        if (!pagerState.canScrollBackward) {
             return
         }
 
         commandScope.launch {
-            pagerState.scrollToPage(prevPage)
+            pagerState.scrollToPage(pagerState.currentPage - 1)
         }
     }
 }
 
 @Composable
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
+fun HorizontalPagerIndicator(
+    pageCount: Int,
+    pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    activeColor: Color = MaterialTheme.colorScheme.primary,
+    inactiveColor: Color = MaterialTheme.colorScheme.onSurface,
+) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        repeat(pageCount) { index ->
+            val color = if (pagerState.currentPage == index) activeColor else inactiveColor
+
+            Box(
+                modifier = Modifier
+                    .height(8.dp)
+                    .aspectRatio(1.0f)
+                    .drawWithContent {
+                        drawCircle(color)
+                    },
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
 fun Wizard(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
@@ -95,7 +120,7 @@ fun Wizard(
             .background(backgroundColor)
     ) {
         HorizontalPager(
-            count = pages.size,
+            pageCount = pages.size,
             state = pagerState,
             key = { page -> pages[page].name },
             userScrollEnabled = false,
@@ -103,10 +128,13 @@ fun Wizard(
                 .weight(1f)
                 .fillMaxWidth(),
         ) { page ->
-            pages[page].component(componentScope)
+            Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                pages[page].component(componentScope)
+            }
         }
 
         HorizontalPagerIndicator(
+            pageCount = pages.size,
             pagerState = pagerState,
             activeColor = activeColor,
             inactiveColor = inactiveColor,

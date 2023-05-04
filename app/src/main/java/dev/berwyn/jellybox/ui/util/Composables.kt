@@ -4,6 +4,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import dev.berwyn.jellybox.ui.locals.LocalActivity
 import dev.berwyn.jellybox.ui.navigation.NavigationType
 
 @Composable

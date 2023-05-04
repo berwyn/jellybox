@@ -61,7 +61,7 @@ ksp {
 dependencies {
     ksp("androidx.room:room-compiler:2.5.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2023.04.00")
+    val composeBom = platform("androidx.compose:compose-bom:2023.05.00")
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -80,9 +80,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.6.1")
     implementation("androidx.lifecycle:lifecycle-service:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation("androidx.activity:activity-compose:1.7.1")
     implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.security:security-crypto:1.0.0")
     implementation("androidx.room:room-runtime:2.5.1")
     implementation("androidx.room:room-ktx:2.5.1")
@@ -92,7 +91,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3:1.1.0-rc01")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.runtime:runtime-tracing:1.0.0-alpha03")
 
@@ -100,8 +99,6 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
     implementation("com.google.accompanist:accompanist-flowlayout:0.30.0")
-    implementation("com.google.accompanist:accompanist-pager:0.28.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")

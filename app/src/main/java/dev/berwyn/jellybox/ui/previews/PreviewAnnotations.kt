@@ -33,7 +33,7 @@ annotation class ThemePreviews
     group = "Devices",
     device = "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480"
 )
-annotation class DevicePreview
+annotation class DevicePreviews
 
 @Preview(name = "Dynamic Colour - Blue", wallpaper = Wallpapers.BLUE_DOMINATED_EXAMPLE)
 @Preview(name = "Dynamic Colour - Red", wallpaper = Wallpapers.GREEN_DOMINATED_EXAMPLE)

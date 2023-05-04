@@ -5,28 +5,23 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import dev.berwyn.jellybox.data.local.JellyfinServer
-import dev.berwyn.jellybox.domain.SelectActiveServerUseCase
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
-import kotlinx.coroutines.launch
 
 @Composable
 fun JellyboxNavRail(
     servers: List<JellyfinServer>,
     selectActiveServer: (JellyfinServer) -> Unit,
-    destinations: List<TopLevelDestination>,
+    destinations: Array<TopLevelDestination>,
     onNavigateToDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,
     modifier: Modifier = Modifier,
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     NavigationRail(
         modifier = modifier,
         header = {
@@ -65,9 +60,7 @@ private fun JellyboxNavRailPreview() {
         JellyboxNavRail(
             servers = listOf(),
             selectActiveServer = {},
-            destinations = listOf(
-                TopLevelDestination.HOME
-            ),
+            destinations = enumValues<TopLevelDestination>(),
             onNavigateToDestination = {},
             currentDestination = null,
         )

@@ -14,7 +14,7 @@ import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 
 @Composable
 fun JellyboxNavBar(
-    destinations: List<TopLevelDestination>,
+    destinations: Array<TopLevelDestination>,
     onNavigateToDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,
     modifier: Modifier = Modifier,
@@ -47,9 +47,7 @@ fun JellyboxNavBar(
 private fun JellyboxNavBarPreview() {
     JellyboxTheme {
         JellyboxNavBar(
-            destinations = listOf(
-                TopLevelDestination.HOME,
-            ),
+            destinations = enumValues(),
             onNavigateToDestination = {},
             currentDestination = null,
         )

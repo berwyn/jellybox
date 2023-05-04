@@ -2,6 +2,7 @@ package dev.berwyn.jellybox.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.domain.GetActiveServerUseCase
 import dev.berwyn.jellybox.domain.RetrieveServerCredentialUseCase
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,7 @@ import org.jellyfin.sdk.api.client.extensions.userViewsApi
 import org.jellyfin.sdk.model.api.BaseItemDto
 
 class HomeScreenViewModel(
+    applicationState: ApplicationState,
     getActiveServer: GetActiveServerUseCase,
     private val retrieveServerCredential: RetrieveServerCredentialUseCase,
     private val jellyfin: Jellyfin,
@@ -29,6 +31,7 @@ class HomeScreenViewModel(
     private val activeServer = getActiveServer()
     private val client = activeServer
         .distinctUntilChanged()
+        .onEach { applicationState.selectedServer = it }
         .map {
             it?.let { jellyfin.createApi(it.uri, accessToken = retrieveServerCredential(it)) }
         }

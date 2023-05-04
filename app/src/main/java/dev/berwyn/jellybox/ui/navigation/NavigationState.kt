@@ -37,8 +37,6 @@ class NavigationState(
             else -> null
         }
 
-    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().toList()
-
     fun goToOnboarding() {
         trace("Navigation: onboarding") {
             navController.navigate("onboarding") {
