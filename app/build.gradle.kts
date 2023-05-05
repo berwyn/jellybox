@@ -38,7 +38,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.5"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
 
     packagingOptions {
@@ -76,6 +76,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.6.1")
@@ -99,6 +100,11 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
     implementation("com.google.accompanist:accompanist-flowlayout:0.30.0")
+
+    implementation("org.mobilenativefoundation.store:store5:5.0.0-alpha05")
+    implementation("org.jetbrains.kotlinx:atomicfu:0.18.5")
+
+    implementation("com.github.skydoves:landscapist-coil:2.1.12")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")

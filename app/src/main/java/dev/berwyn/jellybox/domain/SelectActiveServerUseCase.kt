@@ -1,8 +1,10 @@
 package dev.berwyn.jellybox.domain
 
+import android.util.Log
 import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.data.local.JellyboxDatabase
 import dev.berwyn.jellybox.data.local.JellyfinServer
+import org.jellyfin.sdk.api.client.extensions.userApi
 
 class SelectActiveServerUseCase(
     private val database: JellyboxDatabase,
@@ -22,6 +24,19 @@ class SelectActiveServerUseCase(
             ?.let {
                 database.serverDao().updateServer(it)
                 applicationState.selectedServer = it
+
+                applicationState.jellyfinClient?.let { client ->
+                    try {
+                        val user by client.userApi.getCurrentUser()
+
+                        client.userId = user.id
+
+                        Log.d(::SelectActiveServerUseCase.name, "Logged in as user ${user.name}")
+                    } catch (err: Error) {
+                        Log.e(::SelectActiveServerUseCase.name, "Failed to ping system", err)
+                    }
+
+                }
             }
     }
 }

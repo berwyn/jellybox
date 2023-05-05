@@ -8,6 +8,7 @@ import dev.berwyn.jellybox.data.local.JellyfinServer
 import dev.berwyn.jellybox.domain.RetrieveServerCredentialUseCase
 import dev.berwyn.jellybox.ui.navigation.NavigationType
 import org.jellyfin.sdk.Jellyfin
+import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.api.client.ApiClient as JellyfinApi
 
 class ApplicationState(
@@ -27,5 +28,14 @@ class ApplicationState(
         selectedServer?.let { server ->
             jellyfin.createApi(server.uri, accessToken = retrieveServerCredential(server))
         }
+    }
+
+    suspend fun ensureSession() = Result.runCatching {
+        val client = jellyfinClient
+
+        client ?: error("No active server")
+
+        val user by client.userApi.getCurrentUser()
+        client.userId = user.id
     }
 }

@@ -14,7 +14,9 @@ val databaseModule = module {
             androidContext(),
             JellyboxDatabase::class.java,
             "jellybox"
-        ).build()
+        )
+            .addMigrations(MIGRATION_2_3)
+            .build()
     }
 
     singleOf(::DatabaseJellyfinServerRepository) {
