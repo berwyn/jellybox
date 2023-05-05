@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,8 +12,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import com.skydoves.landscapist.coil.CoilImage
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import dev.berwyn.jellybox.data.local.MediaItem
 import dev.berwyn.jellybox.ui.locals.LocalApplicationState
 import org.jellyfin.sdk.api.client.extensions.imageApi
@@ -43,6 +47,14 @@ fun MediaItemCard(item: MediaItem, modifier: Modifier = Modifier) {
             CoilImage(
                 imageModel = { imageUrl },
                 modifier = Modifier.fillMaxSize(),
+                component = rememberImageComponent {
+                    add(
+                        ShimmerPlugin(
+                            baseColor = MaterialTheme.colorScheme.surfaceVariant,
+                            highlightColor = MaterialTheme.colorScheme.outlineVariant,
+                        )
+                    )
+                }
             )
         }
     }

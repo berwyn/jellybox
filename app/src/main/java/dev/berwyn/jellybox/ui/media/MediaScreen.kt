@@ -13,6 +13,7 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -81,12 +82,14 @@ private fun MediaScreen(
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
+    val appBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Column(modifier = modifier) {
         TopAppBar(
             title = {
                 Text("Media")
             },
+            scrollBehavior = appBarScrollBehavior,
         )
 
         ScrollableTabRow(
@@ -117,7 +120,11 @@ private fun MediaScreen(
         ) { index ->
             val tab = tabs[index]
 
-            MediaCollection(tab.collectionId, modifier = Modifier.fillMaxSize())
+            MediaCollection(
+                tab.collectionId,
+                modifier = Modifier.fillMaxSize(),
+                nestedScrollConnection = appBarScrollBehavior.nestedScrollConnection,
+            )
         }
     }
 }

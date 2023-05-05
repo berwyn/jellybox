@@ -105,6 +105,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:atomicfu:0.18.5")
 
     implementation("com.github.skydoves:landscapist-coil:2.1.12")
+    implementation("com.github.skydoves:landscapist-placeholder:2.1.12")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
