@@ -1,5 +1,6 @@
 package dev.berwyn.jellybox.ui.media
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import java.util.UUID
 fun MediaCollectionLatest(
     items: ImmutableList<MediaItem>,
     modifier: Modifier = Modifier,
+    onItemSelected: (id: UUID) -> Unit = {},
 ) {
     Column(modifier = modifier) {
         Text(stringResource(R.string.title_latest), style = MaterialTheme.typography.titleLarge)
@@ -36,7 +38,14 @@ fun MediaCollectionLatest(
             items(items.size, key = { index -> items[index].id }) {
                 val item = items[it]
 
-                MediaItemCard(item = item, modifier = Modifier.width(192.dp))
+                MediaItemCard(
+                    item = item,
+                    modifier = Modifier
+                        .width(192.dp)
+                        .clickable {
+                            onItemSelected(item.id)
+                        },
+                )
             }
         }
     }

@@ -122,7 +122,7 @@ fun JellyboxNavigation(
                     }
 
                     onboardingRoutes(navigationState.navController)
-                    mediaRoutes()
+                    mediaRoutes(navigationState.navController)
                 }
             }
         }

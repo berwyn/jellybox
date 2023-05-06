@@ -38,12 +38,14 @@ import org.koin.compose.koinInject
 import org.mobilenativefoundation.store.store5.Store
 import java.util.UUID
 
+@Suppress("unused")
 private const val TAG = "Media Screen"
 
 @Composable
 fun MediaScreen(
     applicationState: ApplicationState,
     modifier: Modifier = Modifier,
+    onItemSelected: (id: UUID) -> Unit = {},
     store: Store<UUID, List<MediaCollection>> = koinInject(MediaCollectionStore)
 ) {
     var sessionVerified by remember { mutableStateOf(false) }
@@ -62,14 +64,18 @@ fun MediaScreen(
             id = applicationState.jellyfinClient!!.userId!!,
             modifier = modifier
         ) {
-            val tabs = it.orEmpty().map {
+            val tabs = it.orEmpty().map { collection ->
                 MediaTab(
-                    title = it.name,
-                    collectionId = it.id,
+                    title = collection.name,
+                    collectionId = collection.id,
                 )
             }.toImmutableList()
 
-            MediaScreen(tabs = tabs, modifier = Modifier.fillMaxSize())
+            MediaScreen(
+                tabs = tabs,
+                modifier = Modifier.fillMaxSize(),
+                onItemSelected = onItemSelected,
+            )
         }
     }
 }
@@ -79,6 +85,7 @@ fun MediaScreen(
 private fun MediaScreen(
     tabs: ImmutableList<MediaTab>,
     modifier: Modifier = Modifier,
+    onItemSelected: (id: UUID) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
@@ -123,6 +130,7 @@ private fun MediaScreen(
             MediaCollection(
                 tab.collectionId,
                 modifier = Modifier.fillMaxSize(),
+                onItemSelected = onItemSelected,
                 nestedScrollConnection = appBarScrollBehavior.nestedScrollConnection,
             )
         }

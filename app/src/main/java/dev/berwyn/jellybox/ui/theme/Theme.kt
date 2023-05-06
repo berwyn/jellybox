@@ -11,6 +11,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -53,17 +54,21 @@ fun JellyboxTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
-    DisposableEffect(systemUiController, colorScheme) {
+    SideEffect {
         systemUiController.setStatusBarColor(
-            color = colorScheme.primary,
+            color = Color.Transparent,
             darkIcons = !darkTheme
         )
 
-        onDispose {}
+        systemUiController.setNavigationBarColor(
+            color = Color.Transparent,
+            darkIcons = !darkTheme,
+        )
     }
 
     MaterialTheme(

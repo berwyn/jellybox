@@ -1,6 +1,8 @@
 package dev.berwyn.jellybox.ui.media
 
 import android.util.Log
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -43,6 +45,7 @@ fun MediaCollection(
     collectionId: UUID,
     modifier: Modifier = Modifier,
     nestedScrollConnection: NestedScrollConnection? = null,
+    onItemSelected: (id: UUID) -> Unit = {},
     itemsStore: Store<UUID, MediaCollectionWithItems> = koinInject(CollectionMediaItemStore),
     latestStore: Store<UUID, List<MediaItem>> = koinInject(LatestMediaItemsStore),
 ) {
@@ -97,6 +100,7 @@ fun MediaCollection(
         items = items,
         latestItems = latestItems,
         modifier = modifier,
+        onItemSelected = onItemSelected,
         nestedScrollConnection = nestedScrollConnection,
     )
 }
@@ -106,10 +110,17 @@ fun MediaCollection(
     items: ImmutableList<MediaItem>,
     latestItems: ImmutableList<MediaItem>,
     modifier: Modifier = Modifier,
+    onItemSelected: (id: UUID) -> Unit = {},
     nestedScrollConnection: NestedScrollConnection? = null,
 ) {
+    val reifiedModifier = if(nestedScrollConnection != null) {
+        modifier.nestedScroll(nestedScrollConnection)
+    } else {
+        modifier
+    }
+
     LazyVerticalGrid(
-        modifier = if (nestedScrollConnection != null) modifier.nestedScroll(nestedScrollConnection) else modifier,
+        modifier = reifiedModifier,
         columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -117,7 +128,10 @@ fun MediaCollection(
     ) {
         if (latestItems.size > 0) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                MediaCollectionLatest(latestItems)
+                MediaCollectionLatest(
+                    latestItems,
+                    onItemSelected = onItemSelected,
+                )
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -125,8 +139,15 @@ fun MediaCollection(
             }
         }
 
-        items(items.size, key = { index -> items[index].id }) {
-            MediaItemCard(item = items[it])
+        items(items.size, key = { index -> items[index].id }) { index ->
+            val item = items[index]
+
+            MediaItemCard(
+                item = item,
+                modifier = Modifier.clickable {
+                    onItemSelected(item.id)
+                }
+            )
         }
     }
 }
