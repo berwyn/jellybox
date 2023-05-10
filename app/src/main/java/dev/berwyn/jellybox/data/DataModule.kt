@@ -11,12 +11,10 @@ import kotlinx.collections.immutable.toImmutableList
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.userLibraryApi
 import org.jellyfin.sdk.api.client.extensions.userViewsApi
-import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFields
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.mobilenativefoundation.store.store5.Converter
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.FetcherResult
 import org.mobilenativefoundation.store.store5.SourceOfTruth
@@ -35,16 +33,22 @@ val dataModule = module {
         val state: ApplicationState = get()
         val db: JellyboxDatabase = get()
 
-        StoreBuilder.from<UUID, List<BaseItemDto>, List<MediaCollection>, List<MediaCollection>>(
+        StoreBuilder.from<UUID, List<MediaCollection>, List<MediaCollection>>(
             fetcher = Fetcher.ofResult {
                 val client = state.jellyfinClient
 
                 client ?: return@ofResult FetcherResult.Error.Message("Client not configured")
 
                 try {
-                    val views by client.userViewsApi.getUserViews(userId = it)
+                    val dtos by client.userViewsApi.getUserViews(userId = it)
 
-                    FetcherResult.Data(views.items.orEmpty())
+                    val views = dtos.items
+                        .orEmpty()
+                        .map { dto ->
+                            MediaCollection(id = dto.id, name = dto.name ?: dto.collectionType ?: "Unnamed")
+                        }
+
+                    FetcherResult.Data(views)
                 } catch (error: Error) {
                     FetcherResult.Error.Exception(error)
                 }
@@ -53,30 +57,23 @@ val dataModule = module {
                 reader = { db.mediaCollectionDao().getMediaCollections() },
                 writer = { _, item -> db.mediaCollectionDao().storeMediaCollection(item) },
             )
-        )
-            .converter(
-                Converter.Builder<List<BaseItemDto>, List<MediaCollection>, List<MediaCollection>>()
-                    .fromNetworkToOutput {
-                        it.map { dto ->
-                            MediaCollection(id = dto.id, name = dto.name ?: dto.collectionType ?: "Unnamed")
-                        }
-                    }
-                    .build()
-            )
-            .build()
+        ).build()
     }
 
     single(MediaItemStore) {
         val state: ApplicationState = get()
         val db: JellyboxDatabase = get()
 
-        StoreBuilder.from<UUID, BaseItemDto, MediaItem, MediaItem>(
+        StoreBuilder.from<UUID, MediaItem, MediaItem>(
             fetcher = Fetcher.ofResult {
                 val client = state.jellyfinClient
 
                 client ?: return@ofResult FetcherResult.Error.Message("Client not configured")
 
-                val item by client.userLibraryApi.getItem(itemId = it)
+                val dto by client.userLibraryApi.getItem(itemId = it)
+                val item = dto.asMediaItem().getOrElse {
+                    return@ofResult FetcherResult.Error.Exception(it)
+                }
 
                 FetcherResult.Data(item)
             },
@@ -86,15 +83,7 @@ val dataModule = module {
                 delete = db.mediaItemDao()::deleteMediaItem,
                 deleteAll = db.mediaItemDao()::deleteAllMediaItems,
             )
-        )
-            .converter(
-                Converter.Builder<BaseItemDto, MediaItem, MediaItem>()
-                    .fromNetworkToOutput { it.asMediaItem().getOrThrow() }
-                    .fromLocalToOutput { it }
-                    .fromOutputToLocal { it }
-                    .build()
-            )
-            .build()
+        ).build()
     }
 
     single(LatestMediaItemsStore) {
@@ -127,7 +116,7 @@ val dataModule = module {
         val state: ApplicationState = get()
         val db: JellyboxDatabase = get()
 
-        StoreBuilder.from<UUID, Pair<MediaCollection, List<BaseItemDto>>, MediaCollectionWithItems, MediaCollectionWithItems>(
+        StoreBuilder.from<UUID, MediaCollectionWithItems, MediaCollectionWithItems>(
             fetcher = Fetcher.ofResult { collectionId ->
                 val client = state.jellyfinClient
 
@@ -138,7 +127,7 @@ val dataModule = module {
                 collection ?: return@ofResult FetcherResult.Error.Message("Unknown collection requested!")
 
                 try {
-                    val response = client.itemsApi.getItemsByUserId(
+                    val response by client.itemsApi.getItemsByUserId(
                         parentId = collectionId,
                         enableImages = true,
                         fields = persistentListOf(
@@ -148,7 +137,10 @@ val dataModule = module {
                     )
 
                     FetcherResult.Data(
-                        Pair(collection, response.content.items.orEmpty())
+                        MediaCollectionWithItems(
+                            collection,
+                            response.items.orEmpty().map { it.asMediaItem().getOrThrow() }
+                        )
                     )
                 } catch (error: Exception) {
                     FetcherResult.Error.Exception(error)
@@ -169,14 +161,6 @@ val dataModule = module {
                     }
                 }
             )
-        )
-            .converter(
-                Converter.Builder<Pair<MediaCollection, List<BaseItemDto>>, MediaCollectionWithItems, MediaCollectionWithItems>()
-                    .fromNetworkToOutput { (collection, items) ->
-                        MediaCollectionWithItems(collection, items.map { it.asMediaItem().getOrThrow() })
-                    }
-                    .build()
-            )
-            .build()
+        ).build()
     }
 }

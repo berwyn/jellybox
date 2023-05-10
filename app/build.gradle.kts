@@ -61,7 +61,7 @@ ksp {
 dependencies {
     ksp("androidx.room:room-compiler:2.5.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2023.05.00")
+    val composeBom = platform("androidx.compose:compose-bom:2023.05.01")
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -69,12 +69,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
     implementation("io.insert-koin:koin-android:3.4.0")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.3")
-    implementation("io.insert-koin:koin-androidx-compose-navigation:3.4.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.4")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:3.4.4")
 
-    implementation("androidx.core:core-ktx:1.10.0")
+    implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
@@ -92,20 +92,20 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.material3:material3:1.1.0-rc01")
+    implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.runtime:runtime-tracing:1.0.0-alpha03")
 
-    implementation("org.jellyfin.sdk:jellyfin-core:1.4.0")
+    implementation("org.jellyfin.sdk:jellyfin-core:1.4.2")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
     implementation("com.google.accompanist:accompanist-flowlayout:0.30.0")
 
-    implementation("org.mobilenativefoundation.store:store5:5.0.0-alpha05")
-    implementation("org.jetbrains.kotlinx:atomicfu:0.18.5")
+    implementation("org.mobilenativefoundation.store:store5:5.0.0-alpha06")
+    implementation("org.jetbrains.kotlinx:atomicfu:0.20.2")
 
-    implementation("com.github.skydoves:landscapist-coil:2.1.12")
-    implementation("com.github.skydoves:landscapist-placeholder:2.1.12")
+    implementation("com.github.skydoves:landscapist-coil:2.1.13")
+    implementation("com.github.skydoves:landscapist-placeholder:2.1.13")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")

@@ -76,24 +76,25 @@ fun <Key : Any, T : Any> DataLoader(
 
     LaunchedEffect(id, store) {
         store.stream(StoreReadRequest.cached(id, refreshData)).collect { response ->
+            if (response.origin is StoreReadResponseOrigin.Fetcher) {
+                isLoading = false
+            }
+
             when (response) {
                 is StoreReadResponse.Loading -> isLoading = true
                 is StoreReadResponse.Data -> {
-                    if (response.origin == StoreReadResponseOrigin.Fetcher) isLoading = false
                     data = response.value
                 }
                 is StoreReadResponse.Error.Exception -> {
-                    if (response.origin == StoreReadResponseOrigin.Fetcher) isLoading = false
                     Log.e(TAG, "Error during data load", response.error)
                     TODO("Show error")
                 }
                 is StoreReadResponse.Error.Message -> {
-                    if (response.origin == StoreReadResponseOrigin.Fetcher) isLoading = false
                     Log.e(TAG, "Error during data load: ${response.message}")
                     TODO("Show error")
                 }
                 is StoreReadResponse.NoNewData -> {
-                    if (response.origin == StoreReadResponseOrigin.Fetcher) isLoading = false
+                    // no-op
                 }
             }
         }
