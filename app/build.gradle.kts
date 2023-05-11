@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -67,6 +69,7 @@ dependencies {
     androidTestImplementation(composeBom)
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
     implementation("io.insert-koin:koin-android:3.4.0")
     implementation("io.insert-koin:koin-androidx-compose:3.4.4")
@@ -105,6 +108,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:atomicfu:0.20.2")
 
     implementation("com.github.skydoves:landscapist-coil:2.1.13")
+    implementation("com.github.skydoves:landscapist-palette:2.1.13")
     implementation("com.github.skydoves:landscapist-placeholder:2.1.13")
 
     testImplementation("junit:junit:4.13.2")

@@ -12,5 +12,11 @@ data class MediaItem(
     val imageAspectRatio: Double,
     val type: MediaItemType,
     val parentId: UUID,
+    val productionYear: Int? = null,
+    val overview: String? = null,
+    val tagLines: List<String>? = null,
+    val rating: String? = null,
+    // Duration of the item in milliseconds
+    val runtime: Long? = null,
 )
 

@@ -9,6 +9,7 @@ import dev.berwyn.jellybox.data.local.MediaItem
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import org.jellyfin.sdk.api.client.extensions.itemsApi
+import org.jellyfin.sdk.api.client.extensions.libraryApi
 import org.jellyfin.sdk.api.client.extensions.userLibraryApi
 import org.jellyfin.sdk.api.client.extensions.userViewsApi
 import org.jellyfin.sdk.model.api.ItemFields
@@ -133,6 +134,8 @@ val dataModule = module {
                         fields = persistentListOf(
                             ItemFields.PARENT_ID,
                             ItemFields.PRIMARY_IMAGE_ASPECT_RATIO,
+                            ItemFields.TAGLINES,
+                            ItemFields.OVERVIEW,
                         )
                     )
 

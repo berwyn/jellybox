@@ -5,7 +5,6 @@ import dev.berwyn.jellybox.data.local.MediaItemType
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 
-
 fun BaseItemDto.asMediaItem() =
     Result.runCatching {
         name ?: error("No name on media item!")
@@ -24,5 +23,12 @@ fun BaseItemDto.asMediaItem() =
                 BaseItemKind.MUSIC_ALBUM -> MediaItemType.MUSIC_ALBUM
                 else -> error("Invalid media item type!")
             },
+            productionYear = productionYear,
+            overview = overview,
+            tagLines = taglines,
+            rating = officialRating,
+            // Jellyfin uses C# ticks.
+            // A Tick is 100 nanoseconds, there are 10,000 ticks in a millisecond
+            runtime = runTimeTicks?.let { it / 10_000 } ?: 0L,
         )
     }

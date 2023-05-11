@@ -3,11 +3,12 @@ package dev.berwyn.jellybox.data.local
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    version = 4,
+    version = 5,
     entities = [
         JellyfinServer::class,
         MediaCollection::class,
@@ -19,8 +20,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         AutoMigration(from = 1, to = 2),
         // Add pivot table between collection & media item
         AutoMigration(from = 3, to = 4),
+        // Add fields to `MediaItem`
+        AutoMigration(from = 4, to = 5),
     ],
 )
+@TypeConverters(DatabaseConverters::class)
 abstract class JellyboxDatabase : RoomDatabase() {
     abstract fun serverDao(): JellyfinServerDao
 
