@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import dev.berwyn.jellybox.ui.isCollapsed
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalTime
+import java.util.UUID
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -49,6 +51,7 @@ fun MediaItemScreen(
     modifier: Modifier = Modifier,
     viewModel: MediaItemScreenViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {},
+    onPlayPressed: (itemId: UUID) -> Unit = {}
 ) {
     val item by viewModel.item
         .collectAsStateWithLifecycle(initialValue = null)
@@ -124,6 +127,12 @@ fun MediaItemScreen(
                             val time = LocalTime.ofSecondOfDay(duration.inWholeSeconds)
 
                             Text(time.toString())
+                        }
+
+                        item?.let {
+                            IconButton(onClick = { onPlayPressed(it.id) }) {
+                                Icon(Icons.Default.PlayArrow, contentDescription = "play")
+                            }
                         }
                     }
                 }

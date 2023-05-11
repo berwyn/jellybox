@@ -68,6 +68,7 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
@@ -91,6 +92,14 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.1")
     implementation("androidx.room:room-paging:2.5.1")
     implementation("androidx.tracing:tracing-ktx:1.1.0")
+    implementation("androidx.media3:media3-datasource-okhttp:1.0.1")
+    implementation("androidx.media3:media3-ui:1.0.1")
+    implementation("androidx.media3:media3-session:1.0.1")
+    implementation("androidx.media3:media3-extractor:1.0.1")
+    implementation("androidx.media3:media3-exoplayer:1.0.1")
+    implementation("androidx.media3:media3-exoplayer-hls:1.0.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.0.1")
+    implementation("androidx.media3:media3-exoplayer-rtsp:1.0.1")
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")

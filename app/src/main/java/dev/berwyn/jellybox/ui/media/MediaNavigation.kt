@@ -30,8 +30,22 @@ fun NavGraphBuilder.mediaRoutes(navController: NavHostController) {
             )
         ) {
             MediaItemScreen(
-                onBackPressed = { navController.popBackStack() }
+                onBackPressed = { navController.popBackStack() },
+                onPlayPressed = { id -> navController.navigate("play/$id") }
             )
+        }
+
+        composable(
+            route = "play/{id}",
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStack ->
+            val itemId = backStack.arguments!!.getString("id")!!
+
+            MediaPlayer(itemId = itemId)
         }
     }
 }

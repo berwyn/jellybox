@@ -36,6 +36,8 @@ class ApplicationState(
         client ?: error("No active server")
 
         val user by client.userApi.getCurrentUser()
+
         client.userId = user.id
+        client
     }
 }
