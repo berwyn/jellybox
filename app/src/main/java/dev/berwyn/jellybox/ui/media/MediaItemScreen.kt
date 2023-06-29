@@ -1,6 +1,6 @@
 package dev.berwyn.jellybox.ui.media
 
-import android.annotation.SuppressLint
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +44,6 @@ import java.util.UUID
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-@SuppressLint("NewApi")
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun MediaItemScreen(
@@ -124,7 +123,11 @@ fun MediaItemScreen(
 
                         item?.runtime?.let {
                             val duration = it.toDuration(DurationUnit.MILLISECONDS)
-                            val time = LocalTime.ofSecondOfDay(duration.inWholeSeconds)
+                            val time = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                LocalTime.ofSecondOfDay(duration.inWholeSeconds)
+                            } else {
+                                TODO("VERSION.SDK_INT < O")
+                            }
 
                             Text(time.toString())
                         }

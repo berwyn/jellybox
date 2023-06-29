@@ -3,7 +3,7 @@ package dev.berwyn.jellybox.ui.onboarding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import dev.berwyn.jellybox.ui.Wizard
+import dev.berwyn.jellybox.ui.components.Wizard
 import org.koin.compose.koinInject
 
 @Composable

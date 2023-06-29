@@ -1,6 +1,7 @@
 package dev.berwyn.jellybox.ui.media
 
 import android.content.ComponentName
+import android.util.Log
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.foundation.layout.Box
@@ -74,7 +75,12 @@ fun MediaPlayer(
     LaunchedEffect(item) {
         applicationState.ensureSession().onSuccess { client ->
             val uri: String = when (item.type) {
-                MediaItemType.MOVIE -> client.videosApi.getVideoStreamUrl(item.id)
+                MediaItemType.MOVIE -> client.videosApi.getVideoStreamByContainerUrl(
+                    itemId = item.id,
+                    container = "mp4",
+                    videoCodec = "h264",
+                    audioCodec = "aac",
+                )
                 else -> TODO("Not implemented")
             }
 
@@ -98,7 +104,6 @@ fun MediaPlayer(
 }
 
 @Composable
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 fun  MediaPlayer(
     item: ExoMediaItem,
     modifier: Modifier = Modifier,
@@ -118,9 +123,12 @@ fun  MediaPlayer(
     DisposableEffect(sessionToken) {
         controllerFuture = MediaController.Builder(activity, sessionToken)
             .buildAsync()
-            .also { future ->
-                future.addListener(
-                    { controller = future.get() },
+            .apply {
+                addListener(
+                    {
+                        Log.d("MediaPlayer", "Got MediaController instance")
+                        controller = get()
+                    },
                     MoreExecutors.directExecutor(),
                 )
             }
@@ -142,7 +150,6 @@ fun  MediaPlayer(
         factory = {
             PlayerView(it).apply {
                 layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
             }
         },
         modifier = modifier,

@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Jellybox</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Jellybox</string>
 
     <string name="destination_media">Media</string>
 
     <string name="title_latest">Latest</string>
+    <string name="destination_home">Home</string>
 </resources>

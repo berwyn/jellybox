@@ -12,10 +12,12 @@ import dev.berwyn.jellybox.data.local.JellyfinServer
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun JellyboxNavRail(
-    servers: List<JellyfinServer>,
+    servers: ImmutableList<JellyfinServer>,
     selectActiveServer: (JellyfinServer) -> Unit,
     destinations: Array<TopLevelDestination>,
     onNavigateToDestination: (TopLevelDestination) -> Unit,
@@ -46,7 +48,11 @@ fun JellyboxNavRail(
 
                     Icon(icon, stringResource(destination.iconTextId))
                 },
-                label = { Text(stringResource(destination.titleTextId)) }
+                label = {
+                    if (selected) {
+                        Text(stringResource(destination.titleTextId))
+                    }
+                }
             )
         }
     }
@@ -58,7 +64,7 @@ fun JellyboxNavRail(
 private fun JellyboxNavRailPreview() {
     JellyboxTheme {
         JellyboxNavRail(
-            servers = listOf(),
+            servers = persistentListOf(),
             selectActiveServer = {},
             destinations = enumValues<TopLevelDestination>(),
             onNavigateToDestination = {},

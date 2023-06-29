@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.data.local.MediaItem
 import dev.berwyn.jellybox.data.local.MediaItemType
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
@@ -26,7 +26,7 @@ class MediaItemScreenViewModel(
     val itemStore: Store<UUID, MediaItem>,
 ) : ViewModel() {
 
-    @OptIn(FlowPreview::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val item: Flow<MediaItem?> = savedStateHandle
         .getStateFlow<String?>("id", initialValue = null)
         .filterNotNull()

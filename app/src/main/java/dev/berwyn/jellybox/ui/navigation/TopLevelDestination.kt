@@ -20,8 +20,8 @@ enum class TopLevelDestination(
         route = "home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
-        iconTextId = R.string.app_name,
-        titleTextId = R.string.app_name,
+        iconTextId = R.string.destination_home,
+        titleTextId = R.string.destination_home,
     ),
 
     MEDIA(

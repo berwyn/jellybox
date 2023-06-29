@@ -2,11 +2,12 @@ package dev.berwyn.jellybox.domain
 
 import dev.berwyn.jellybox.security.SecurePrefs
 import org.koin.core.module.dsl.factoryOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val domainModule = module {
     factoryOf(::GetActiveServerUseCase)
-    factoryOf(::SelectActiveServerUseCase)
+    factoryOf(::DatabaseSelectActiveServerUseCase) bind SelectActiveServerUseCase::class
 
     factory {
         RetrieveServerCredentialUseCase(get(SecurePrefs))

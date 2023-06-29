@@ -8,24 +8,17 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import dev.berwyn.jellybox.data.local.JellyfinServer
@@ -35,15 +28,18 @@ import dev.berwyn.jellybox.ui.navigation.JellyboxNavBar
 import dev.berwyn.jellybox.ui.navigation.JellyboxNavRail
 import dev.berwyn.jellybox.ui.navigation.NavigationState
 import dev.berwyn.jellybox.ui.navigation.NavigationType
-import dev.berwyn.jellybox.ui.navigation.ServerSelectionMenu
 import dev.berwyn.jellybox.ui.navigation.rememberNavigationState
 import dev.berwyn.jellybox.ui.onboarding.onboardingRoutes
+import dev.berwyn.jellybox.ui.previews.PreviewNavigationTypeProvider
+import dev.berwyn.jellybox.ui.previews.PreviewReplacer
+import dev.berwyn.jellybox.ui.theme.JellyboxTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 fun JellyboxNavigation(
-    servers: List<JellyfinServer>,
+    servers: ImmutableList<JellyfinServer>,
     selectActiveServer: SelectActiveServerUseCase,
     navigationType: NavigationType,
     navigationHidden: Boolean,
@@ -51,10 +47,18 @@ fun JellyboxNavigation(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
+    val showNavRail = remember(navigationType, navigationHidden) {
+        navigationType == NavigationType.Rail && !navigationHidden
+    }
+
+    val showNavBar = remember(navigationType, navigationHidden) {
+        navigationType == NavigationType.Bar && !navigationHidden
+    }
+
     Scaffold(
         bottomBar = {
             AnimatedVisibility(
-                visible = navigationType == NavigationType.Bar && !navigationHidden,
+                visible = showNavBar,
                 enter = slideInVertically() + fadeIn(),
                 exit = fadeOut() + slideOutVertically(),
             ) {
@@ -70,11 +74,9 @@ fun JellyboxNavigation(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .consumeWindowInsets(padding)
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
             AnimatedVisibility(
-                visible = navigationType == NavigationType.Rail && !navigationHidden,
+                visible = showNavRail,
                 enter = slideInHorizontally() + fadeIn(),
                 exit = fadeOut() + slideOutHorizontally(),
             ) {
@@ -92,39 +94,44 @@ fun JellyboxNavigation(
             }
 
             Column(modifier = Modifier.fillMaxSize()) {
-                navigationState.currentTopLevelDestination?.let { destination ->
-                    TopAppBar(
-                        title = { Text(stringResource(destination.titleTextId)) },
-                        navigationIcon = {
-                            AnimatedVisibility(visible = navigationType == NavigationType.Bar) {
-                                ServerSelectionMenu(
-                                    servers = servers,
-                                    onServerSelected = { server ->
-                                        navigationState.coroutineScope.launch {
-                                            selectActiveServer(server)
-                                        }
-                                    },
-                                )
-                            }
+                val contentModifier = Modifier.weight(1f, fill = true).fillMaxWidth()
+
+                PreviewReplacer(title = "Nav Host", modifier = contentModifier) {
+                    NavHost(
+                        navController = navigationState.navController,
+                        startDestination = "home",
+                        modifier = contentModifier,
+                    ) {
+                        composable("home") {
+                            HomeScreen(
+                                onOnboardingRequested = navigationState::goToOnboarding
+                            )
                         }
-                    )
-                }
 
-                NavHost(
-                    navController = navigationState.navController,
-                    startDestination = "home",
-                    modifier = Modifier.weight(1f)
-                ) {
-                    composable("home") {
-                        HomeScreen(
-                            onOnboardingRequested = navigationState::goToOnboarding
-                        )
+                        onboardingRoutes(navigationState.navController)
+                        mediaRoutes(navigationState.navController)
                     }
-
-                    onboardingRoutes(navigationState.navController)
-                    mediaRoutes(navigationState.navController)
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun JellyboxNavigationPreview(
+    @PreviewParameter(PreviewNavigationTypeProvider::class) navigationType: NavigationType
+) {
+    JellyboxTheme {
+        JellyboxNavigation(
+            servers = persistentListOf(),
+            selectActiveServer = object : SelectActiveServerUseCase {
+                override suspend fun invoke(server: JellyfinServer?, useDefault: Boolean) {
+                    TODO("Not yet implemented")
+                }
+            },
+            navigationType = navigationType,
+            navigationHidden = false,
+        )
     }
 }

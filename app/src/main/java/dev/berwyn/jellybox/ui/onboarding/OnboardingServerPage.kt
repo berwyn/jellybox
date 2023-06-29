@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.*
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
+@OptIn(FlowPreview::class)
 fun OnboardingServerPage(
     loading: Boolean,
     isServerValid: Boolean,
@@ -29,11 +29,17 @@ fun OnboardingServerPage(
     onBackClicked: () -> Unit,
 ) {
     var text by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(validateServer) {
         snapshotFlow { text }
             .distinctUntilChanged()
             .debounce(250L)
+            .stateIn(
+                scope = coroutineScope,
+                started = SharingStarted.WhileSubscribed(1_500),
+                initialValue = "",
+            )
             .collect(validateServer)
     }
 
@@ -56,7 +62,9 @@ fun OnboardingServerPage(
         )
 
         FlowRow(
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             mainAxisAlignment = FlowMainAxisAlignment.Start,
             mainAxisSpacing = 4.dp
         ) {

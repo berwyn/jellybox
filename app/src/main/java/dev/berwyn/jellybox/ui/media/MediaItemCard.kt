@@ -12,50 +12,48 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalInspectionMode
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import dev.berwyn.jellybox.data.local.MediaItem
 import dev.berwyn.jellybox.ui.locals.LocalApplicationState
+import dev.berwyn.jellybox.ui.previews.PreviewReplacer
 import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.model.api.ImageFormat
 import org.jellyfin.sdk.model.api.ImageType
 
 @Composable
 fun MediaItemCard(item: MediaItem, modifier: Modifier = Modifier) {
-
-    var imageUrl: String? by remember { mutableStateOf(null) }
-
-    if (!LocalInspectionMode.current) {
-        val appState = LocalApplicationState.current
-
-        LaunchedEffect(item) {
-            appState.jellyfinClient?.let {
-                imageUrl = it.imageApi.getItemImageUrl(
-                    item.id,
-                    imageType = ImageType.PRIMARY,
-                    format = ImageFormat.WEBP,
-                )
-            }
-        }
-    }
-
     Card(modifier = modifier.aspectRatio(item.imageAspectRatio.toFloat(), true)) {
         Box(modifier = Modifier.fillMaxSize()) {
-            CoilImage(
-                imageModel = { imageUrl },
-                modifier = Modifier.fillMaxSize(),
-                component = rememberImageComponent {
-                    add(
-                        ShimmerPlugin(
-                            baseColor = MaterialTheme.colorScheme.surfaceVariant,
-                            highlightColor = MaterialTheme.colorScheme.outlineVariant,
+            PreviewReplacer(title = "Poster", modifier = Modifier.fillMaxSize()) {
+
+                val appState = LocalApplicationState.current
+                var imageUrl: String? by remember { mutableStateOf(null) }
+
+                LaunchedEffect(item) {
+                    appState.jellyfinClient?.let {
+                        imageUrl = it.imageApi.getItemImageUrl(
+                            item.id,
+                            imageType = ImageType.PRIMARY,
+                            format = ImageFormat.WEBP,
                         )
-                    )
+                    }
                 }
-            )
+
+                CoilImage(
+                    imageModel = { imageUrl },
+                    modifier = Modifier.fillMaxSize(),
+                    component = rememberImageComponent {
+                        add(
+                            ShimmerPlugin(
+                                baseColor = MaterialTheme.colorScheme.surfaceVariant,
+                                highlightColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        )
+                    }
+                )
+            }
         }
     }
 }

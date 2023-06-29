@@ -14,9 +14,7 @@ fun NavGraphBuilder.mediaRoutes(navController: NavHostController) {
             MediaScreen(
                 LocalApplicationState.current,
                 onItemSelected = {
-                    navController.navigate("details/${it.toString()}") {
-
-                    }
+                    navController.navigate("details/$it")
                 }
             )
         }

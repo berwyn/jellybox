@@ -67,6 +67,7 @@ private fun MediaCollectionLatestPreview() {
             )
         )
     }
+
     JellyboxTheme {
         MediaCollectionLatest(filler.toImmutableList())
     }

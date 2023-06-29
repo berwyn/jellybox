@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +25,7 @@ import dev.berwyn.jellybox.data.local.MediaCollection
 import dev.berwyn.jellybox.ui.data.DataLoader
 import dev.berwyn.jellybox.ui.previews.DevicePreviews
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
+import dev.berwyn.jellybox.ui.previews.PreviewReplacer
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -81,7 +79,7 @@ fun MediaScreen(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 private fun MediaScreen(
     tabs: ImmutableList<MediaTab>,
     modifier: Modifier = Modifier,
@@ -89,16 +87,8 @@ private fun MediaScreen(
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
-    val appBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Column(modifier = modifier) {
-        TopAppBar(
-            title = {
-                Text("Media")
-            },
-            scrollBehavior = appBarScrollBehavior,
-        )
-
         ScrollableTabRow(
             modifier = Modifier.fillMaxWidth(),
             selectedTabIndex = pagerState.currentPage,
@@ -125,14 +115,17 @@ private fun MediaScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface),
         ) { index ->
-            val tab = tabs[index]
+            PreviewReplacer(title = "Collection", modifier = Modifier.fillMaxSize()) {
+                val tab = remember(tabs, index) {
+                    tabs[index]
+                }
 
-            MediaCollection(
-                tab.collectionId,
-                modifier = Modifier.fillMaxSize(),
-                onItemSelected = onItemSelected,
-                nestedScrollConnection = appBarScrollBehavior.nestedScrollConnection,
-            )
+                MediaCollection(
+                    tab.collectionId,
+                    modifier = Modifier.fillMaxSize(),
+                    onItemSelected = onItemSelected,
+                )
+            }
         }
     }
 }
