@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "dev.berwyn.jellybox"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "dev.berwyn.jellybox"
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -24,6 +24,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -37,10 +38,11 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
 
     packaging {
@@ -61,16 +63,18 @@ ksp {
 }
 
 dependencies {
-    ksp("androidx.room:room-compiler:2.5.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    val composeBom = platform("androidx.compose:compose-bom:2023.06.01")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+    val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
@@ -78,37 +82,37 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.4.5")
     implementation("io.insert-koin:koin-androidx-compose-navigation:3.4.5")
 
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-service:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-service:2.6.2")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("androidx.security:security-crypto:1.0.0")
-    implementation("androidx.room:room-runtime:2.5.2")
-    implementation("androidx.room:room-ktx:2.5.2")
-    implementation("androidx.room:room-paging:2.5.2")
-    implementation("androidx.tracing:tracing-ktx:1.1.0")
-    implementation("androidx.media3:media3-datasource-okhttp:1.1.0-rc01")
-    implementation("androidx.media3:media3-ui:1.1.0-rc01")
-    implementation("androidx.media3:media3-session:1.1.0-rc01")
-    implementation("androidx.media3:media3-extractor:1.1.0-rc01")
-    implementation("androidx.media3:media3-exoplayer:1.1.0-rc01")
-    implementation("androidx.media3:media3-exoplayer-hls:1.1.0-rc01")
-    implementation("androidx.media3:media3-exoplayer-dash:1.1.0-rc01")
-    implementation("androidx.media3:media3-exoplayer-rtsp:1.1.0-rc01")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-paging:2.6.1")
+    implementation("androidx.tracing:tracing-ktx:1.2.0")
+    implementation("androidx.media3:media3-datasource-okhttp:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation("androidx.media3:media3-session:1.2.0")
+    implementation("androidx.media3:media3-extractor:1.2.0")
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-exoplayer-hls:1.2.0")
+    implementation("androidx.media3:media3-exoplayer-dash:1.2.0")
+    implementation("androidx.media3:media3-exoplayer-rtsp:1.2.0")
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.compose.runtime:runtime-tracing:1.0.0-alpha03")
+    implementation("androidx.compose.runtime:runtime-tracing:1.0.0-beta01")
 
     implementation("org.jellyfin.sdk:jellyfin-core:1.4.2")
 
@@ -116,7 +120,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:0.30.0")
 
     implementation("org.mobilenativefoundation.store:store5:5.0.0-beta01")
-    implementation("org.jetbrains.kotlinx:atomicfu:0.20.2")
+    implementation("org.jetbrains.kotlinx:atomicfu:0.21.0")
 
     implementation("com.github.skydoves:landscapist-coil:2.2.2")
     implementation("com.github.skydoves:landscapist-palette:2.2.2")
@@ -127,7 +131,7 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-    testImplementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.1")
+    testImplementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.2")
     testImplementation("io.insert-koin:koin-test:3.4.1")
     testImplementation("io.insert-koin:koin-test-junit4:3.4.1")
 

@@ -29,7 +29,6 @@ class JellyboxMediaService : MediaSessionService() {
             DefaultRenderersFactory(this@JellyboxMediaService).apply {
                 setEnableDecoderFallback(true)
                 setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-                setEnableAudioOffload(true)
             },
             DefaultMediaSourceFactory(
                 OkHttpDataSource.Factory(

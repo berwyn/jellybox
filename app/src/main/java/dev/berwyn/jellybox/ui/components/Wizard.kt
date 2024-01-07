@@ -55,7 +55,16 @@ fun Wizard(
     inactiveColor: Color = MaterialTheme.colorScheme.tertiary,
     factory: WizardBuilder.() -> Unit
 ) {
-    val pagerState = rememberPagerState()
+    val pages = remember(factory) {
+        WizardBuilderImpl().also(factory).build()
+    }
+
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f,
+        pageCount = { pages.size },
+    )
+
     val commandScope = rememberCoroutineScope()
 
     val componentScope = remember(pagerState, commandScope) {
@@ -83,9 +92,7 @@ fun Wizard(
         }
     }
 
-    val pages = remember(factory) {
-        WizardBuilderImpl().also(factory).build()
-    }
+
 
     Column(
         modifier = modifier
@@ -93,7 +100,6 @@ fun Wizard(
             .background(backgroundColor)
     ) {
         HorizontalPager(
-            pageCount = pages.size,
             state = pagerState,
             key = { page -> pages[page].name },
             userScrollEnabled = false,

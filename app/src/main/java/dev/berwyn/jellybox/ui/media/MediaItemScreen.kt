@@ -123,11 +123,7 @@ fun MediaItemScreen(
 
                         item?.runtime?.let {
                             val duration = it.toDuration(DurationUnit.MILLISECONDS)
-                            val time = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                LocalTime.ofSecondOfDay(duration.inWholeSeconds)
-                            } else {
-                                TODO("VERSION.SDK_INT < O")
-                            }
+                            val time = LocalTime.ofSecondOfDay(duration.inWholeSeconds)
 
                             Text(time.toString())
                         }

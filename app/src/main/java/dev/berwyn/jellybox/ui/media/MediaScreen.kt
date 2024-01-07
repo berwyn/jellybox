@@ -86,7 +86,11 @@ private fun MediaScreen(
     onItemSelected: (id: UUID) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f,
+        pageCount = { tabs.size },
+    )
 
     Column(modifier = modifier) {
         ScrollableTabRow(
@@ -108,7 +112,6 @@ private fun MediaScreen(
         }
 
         HorizontalPager(
-            pageCount = tabs.size,
             state = pagerState,
             key = { tabs[it].collectionId },
             modifier = Modifier
