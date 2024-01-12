@@ -1,5 +1,7 @@
 package dev.berwyn.jellybox.ui.media
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -15,7 +17,8 @@ fun NavGraphBuilder.mediaRoutes(navController: NavHostController) {
                 LocalApplicationState.current,
                 onItemSelected = {
                     navController.navigate("details/$it")
-                }
+                },
+                modifier = Modifier.fillMaxSize(),
             )
         }
 

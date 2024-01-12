@@ -1,6 +1,7 @@
 package dev.berwyn.jellybox.ui.data
 
 import android.util.Log
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -85,14 +86,17 @@ fun <Key : Any, T : Any> DataLoader(
                 is StoreReadResponse.Data -> {
                     data = response.value
                 }
+
                 is StoreReadResponse.Error.Exception -> {
                     Log.e(TAG, "Error during data load", response.error)
                     TODO("Show error")
                 }
+
                 is StoreReadResponse.Error.Message -> {
                     Log.e(TAG, "Error during data load: ${response.message}")
                     TODO("Show error")
                 }
+
                 is StoreReadResponse.NoNewData -> {
                     // no-op
                 }
@@ -100,9 +104,11 @@ fun <Key : Any, T : Any> DataLoader(
         }
     }
 
-    Box(modifier, contentAlignment = Alignment.Center) {
-        if (isLoading) {
-            loadingView()
+    Crossfade(targetState = isLoading, label = "Data Loader") {
+        if (it) {
+            Box(modifier = modifier, contentAlignment = Alignment.Center) {
+                loadingView()
+            }
         } else {
             content(data)
         }

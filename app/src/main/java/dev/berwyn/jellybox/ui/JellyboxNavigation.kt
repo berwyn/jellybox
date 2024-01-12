@@ -1,137 +1,98 @@
 package dev.berwyn.jellybox.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
+import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import dev.berwyn.jellybox.data.local.JellyfinServer
-import dev.berwyn.jellybox.domain.SelectActiveServerUseCase
+import com.skydoves.orbital.Orbital
+import com.skydoves.orbital.rememberContentWithOrbitalScope
 import dev.berwyn.jellybox.ui.media.mediaRoutes
-import dev.berwyn.jellybox.ui.navigation.JellyboxNavBar
-import dev.berwyn.jellybox.ui.navigation.JellyboxNavRail
 import dev.berwyn.jellybox.ui.navigation.NavigationState
-import dev.berwyn.jellybox.ui.navigation.NavigationType
+import dev.berwyn.jellybox.ui.navigation.TopLevelDestination
+import dev.berwyn.jellybox.ui.navigation.isTopLevelDestinationInHierarchy
 import dev.berwyn.jellybox.ui.navigation.rememberNavigationState
 import dev.berwyn.jellybox.ui.onboarding.onboardingRoutes
-import dev.berwyn.jellybox.ui.previews.PreviewNavigationTypeProvider
+import dev.berwyn.jellybox.ui.previews.DevicePreviews
+import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.PreviewReplacer
+import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.coroutines.launch
 
 @Composable
+@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 fun JellyboxNavigation(
-    servers: ImmutableList<JellyfinServer>,
-    selectActiveServer: SelectActiveServerUseCase,
-    navigationType: NavigationType,
-    navigationHidden: Boolean,
     navigationState: NavigationState = rememberNavigationState(),
+    navigationHidden: Boolean = false,
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val currentDestination = navigationState.currentDestination
 
-    val showNavRail = remember(navigationType, navigationHidden) {
-        navigationType == NavigationType.Rail && !navigationHidden
-    }
-
-    val showNavBar = remember(navigationType, navigationHidden) {
-        navigationType == NavigationType.Bar && !navigationHidden
-    }
-
-    Scaffold(
-        bottomBar = {
-            AnimatedVisibility(
-                visible = showNavBar,
-                enter = slideInVertically() + fadeIn(),
-                exit = fadeOut() + slideOutVertically(),
+    val content = rememberContentWithOrbitalScope {
+        PreviewReplacer(
+            title = "Nav Host",
+        ) {
+            NavHost(
+                navController = navigationState.navController,
+                startDestination = "home",
             ) {
-                JellyboxNavBar(
-                    destinations = enumValues(),
-                    onNavigateToDestination = navigationState::navigateToTopLevelDestination,
-                    currentDestination = navigationState.currentDestination,
-                )
+                composable("home") {
+                    HomeScreen(
+                        onOnboardingRequested = navigationState::goToOnboarding
+                    )
+                }
+
+                onboardingRoutes(navigationState.navController)
+                mediaRoutes(navigationState.navController)
             }
         }
-    ) { padding ->
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            AnimatedVisibility(
-                visible = showNavRail,
-                enter = slideInHorizontally() + fadeIn(),
-                exit = fadeOut() + slideOutHorizontally(),
-            ) {
-                JellyboxNavRail(
-                    servers = servers,
-                    selectActiveServer = { server ->
-                        coroutineScope.launch {
-                            selectActiveServer(server)
-                        }
-                    },
-                    destinations = enumValues(),
-                    onNavigateToDestination = navigationState::navigateToTopLevelDestination,
-                    currentDestination = navigationState.currentDestination,
-                )
+    }
+
+    Orbital {
+        if (navigationHidden) {
+            Scaffold { contentPadding ->
+                Box(modifier = Modifier.padding(contentPadding)) {
+                    content()
+                }
             }
-
-            Column(modifier = Modifier.fillMaxSize()) {
-                val contentModifier = Modifier.weight(1f, fill = true).fillMaxWidth()
-
-                PreviewReplacer(title = "Nav Host", modifier = contentModifier) {
-                    NavHost(
-                        navController = navigationState.navController,
-                        startDestination = "home",
-                        modifier = contentModifier,
-                    ) {
-                        composable("home") {
-                            HomeScreen(
-                                onOnboardingRequested = navigationState::goToOnboarding
-                            )
-                        }
-
-                        onboardingRoutes(navigationState.navController)
-                        mediaRoutes(navigationState.navController)
+        } else {
+            NavigationSuiteScaffold(
+                navigationSuiteItems = {
+                    enumValues<TopLevelDestination>().forEach { destination ->
+                        item(
+                            icon = {
+                                Icon(
+                                    destination.unselectedIcon,
+                                    contentDescription = stringResource(destination.iconTextId)
+                                )
+                            },
+                            selected = currentDestination?.isTopLevelDestinationInHierarchy(destination) ?: false,
+                            onClick = {
+                                navigationState.navigateToTopLevelDestination(destination)
+                            }
+                        )
                     }
                 }
+            ) {
+                content()
             }
         }
     }
+
+
 }
 
-@Preview
 @Composable
-private fun JellyboxNavigationPreview(
-    @PreviewParameter(PreviewNavigationTypeProvider::class) navigationType: NavigationType
-) {
+@ThemePreviews
+@DevicePreviews
+@DynamicColourPreviews
+private fun JellyboxNavigationPreview() {
     JellyboxTheme {
-        JellyboxNavigation(
-            servers = persistentListOf(),
-            selectActiveServer = object : SelectActiveServerUseCase {
-                override suspend fun invoke(server: JellyfinServer?, useDefault: Boolean) {
-                    TODO("Not yet implemented")
-                }
-            },
-            navigationType = navigationType,
-            navigationHidden = false,
-        )
+        JellyboxNavigation()
     }
 }

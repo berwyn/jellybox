@@ -1,13 +1,12 @@
 package dev.berwyn.jellybox.ui.media
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -60,7 +59,7 @@ fun MediaScreen(
         DataLoader(
             store = store,
             id = applicationState.jellyfinClient!!.userId!!,
-            modifier = modifier
+            modifier = modifier,
         ) {
             val tabs = it.orEmpty().map { collection ->
                 MediaTab(
@@ -94,9 +93,9 @@ private fun MediaScreen(
 
     Column(modifier = modifier) {
         ScrollableTabRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().statusBarsPadding(),
             selectedTabIndex = pagerState.currentPage,
-            divider = {}
+            divider = {},
         ) {
             tabs.forEachIndexed { index, tab ->
                 Tab(
@@ -106,7 +105,7 @@ private fun MediaScreen(
                             pagerState.animateScrollToPage(index)
                         }
                     },
-                    text = { Text(tab.title) }
+                    text = { Text(tab.title) },
                 )
             }
         }
@@ -114,11 +113,9 @@ private fun MediaScreen(
         HorizontalPager(
             state = pagerState,
             key = { tabs[it].collectionId },
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface),
+            modifier = Modifier.fillMaxSize()
         ) { index ->
-            PreviewReplacer(title = "Collection", modifier = Modifier.fillMaxSize()) {
+            PreviewReplacer(title = "Collection") {
                 val tab = remember(tabs, index) {
                     tabs[index]
                 }
@@ -134,8 +131,8 @@ private fun MediaScreen(
 }
 
 @Composable
-@DevicePreviews
 @ThemePreviews
+@DevicePreviews
 @DynamicColourPreviews
 private fun MediaScreenPreview() {
     JellyboxTheme {

@@ -19,14 +19,11 @@ class StoreServerUseCase(
         if (credentialRetention == StoreServerCredentialRetention.RETAIN) {
             val prefKey = "server/${uri}"
 
-            val didWrite = securePrefs
-                .edit()
-                .apply {
-                    putString(prefKey, authToken)
-                }
-                .commit()
+            val editor = securePrefs.edit().apply {
+                putString(prefKey, authToken)
+            }
 
-            if (!didWrite) {
+            if (!editor.commit()) {
                 return Result.failure(CredentialStorageFailedException())
             }
         }
@@ -36,7 +33,7 @@ class StoreServerUseCase(
                 .serverDao()
                 .storeServer(JellyfinServer.create(name, uri))
                 .let { id -> jellyboxDatabase.serverDao().findById(id) }
-                .apply { if (markActive) selectActiveServer(this) }
+                .also { server -> if (markActive) selectActiveServer(server) }
         }
     }
 }
@@ -46,4 +43,4 @@ enum class StoreServerCredentialRetention {
     RETAIN,
 }
 
-class CredentialStorageFailedException : Exception("Credential storage failed") {}
+class CredentialStorageFailedException : Exception("Credential storage failed")

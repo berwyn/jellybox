@@ -3,18 +3,18 @@ package dev.berwyn.jellybox
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.core.view.WindowCompat
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.ui.JellyboxApp
-import dev.berwyn.jellybox.ui.locals.LocalApplicationState
 import dev.berwyn.jellybox.ui.locals.LocalActivity
+import dev.berwyn.jellybox.ui.locals.LocalApplicationState
 import dev.berwyn.jellybox.ui.locals.LocalWindowSizeClass
 import dev.berwyn.jellybox.ui.util.detectNavigationType
 import org.koin.android.ext.android.inject
@@ -26,8 +26,6 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val imageLoader = ImageLoader.Builder(this)
             .allowHardware(true)
@@ -45,6 +43,8 @@ class MainActivity : ComponentActivity() {
             }
             .build()
 
+        enableEdgeToEdge()
+
         setContent {
             val sizeClass = calculateWindowSizeClass(this)
 
@@ -56,10 +56,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 appState.navigationType = detectNavigationType()
 
-                JellyboxApp(
-                    navigationType = appState.navigationType,
-                    navigationHidden = appState.navigationHidden,
-                )
+                JellyboxApp()
             }
         }
     }

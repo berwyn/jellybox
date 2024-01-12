@@ -112,6 +112,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
+    implementation("androidx.compose.material3:material3-adaptive:1.0.0-alpha03")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha02")
     implementation("androidx.compose.runtime:runtime-tracing:1.0.0-beta01")
 
     implementation("org.jellyfin.sdk:jellyfin-core:1.4.2")
@@ -125,6 +127,7 @@ dependencies {
     implementation("com.github.skydoves:landscapist-coil:2.2.2")
     implementation("com.github.skydoves:landscapist-palette:2.2.2")
     implementation("com.github.skydoves:landscapist-placeholder:2.2.2")
+    implementation("com.github.skydoves:orbital:0.3.3")
 
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
