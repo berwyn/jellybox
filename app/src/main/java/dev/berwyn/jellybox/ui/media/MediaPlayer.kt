@@ -1,10 +1,12 @@
 package dev.berwyn.jellybox.ui.media
 
 import android.content.ComponentName
+import android.net.Uri
 import android.util.Log
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaMetadata
@@ -26,7 +29,10 @@ import dev.berwyn.jellybox.data.local.MediaItem
 import dev.berwyn.jellybox.data.local.MediaItemType
 import dev.berwyn.jellybox.media.JellyboxMediaService
 import dev.berwyn.jellybox.ui.locals.LocalActivity
+import dev.berwyn.jellybox.ui.locals.LocalApplicationState
+import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.api.client.extensions.videosApi
+import org.jellyfin.sdk.model.api.ImageType
 import org.koin.compose.koinInject
 import org.mobilenativefoundation.store.store5.Store
 import org.mobilenativefoundation.store.store5.StoreReadRequest
@@ -58,7 +64,9 @@ fun MediaPlayer(
     }
 
     if (item == null) {
-        Box(modifier)
+        Box(modifier, contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
     } else {
         MediaPlayer(item = item!!, modifier = modifier)
     }
@@ -81,8 +89,16 @@ fun MediaPlayer(
                     videoCodec = "h264",
                     audioCodec = "aac",
                 )
+
                 else -> TODO("Not implemented")
             }
+
+            val artworkUri = client.imageApi.getItemImageUrl(
+                itemId = item.id,
+                imageType = ImageType.PRIMARY,
+                maxWidth = 512,
+                maxHeight = 512,
+            )
 
             mediaItem = ExoMediaItem.Builder()
                 .setUri(uri)
@@ -90,6 +106,7 @@ fun MediaPlayer(
                 .setMediaMetadata(
                     MediaMetadata.Builder()
                         .setTitle(item.name)
+                        .setArtworkUri(Uri.parse(artworkUri))
                         .build()
                 )
                 .build()
@@ -97,18 +114,21 @@ fun MediaPlayer(
     }
 
     if (mediaItem == null) {
-        Box(modifier)
+        Box(modifier, contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
     } else {
         MediaPlayer(item = mediaItem!!, modifier = modifier)
     }
 }
 
 @Composable
-fun  MediaPlayer(
+fun MediaPlayer(
     item: ExoMediaItem,
     modifier: Modifier = Modifier,
 ) {
     val activity = LocalActivity.current
+    val appState = LocalApplicationState.current
 
     val sessionToken: SessionToken = remember {
         SessionToken(
@@ -120,6 +140,14 @@ fun  MediaPlayer(
     var controllerFuture: ListenableFuture<MediaController>? by remember { mutableStateOf(null) }
     var controller: MediaController? by remember { mutableStateOf(null) }
 
+    DisposableEffect(Unit) {
+        appState.hideNavigation()
+
+        onDispose {
+            appState.showNavigation()
+        }
+    }
+
     DisposableEffect(sessionToken) {
         controllerFuture = MediaController.Builder(activity, sessionToken)
             .buildAsync()
@@ -127,7 +155,11 @@ fun  MediaPlayer(
                 addListener(
                     {
                         Log.d("MediaPlayer", "Got MediaController instance")
-                        controller = get()
+                        controller = get().apply {
+                            setMediaItem(item)
+                            prepare()
+                            play()
+                        }
                     },
                     MoreExecutors.directExecutor(),
                 )
@@ -135,14 +167,6 @@ fun  MediaPlayer(
 
         onDispose {
             controllerFuture?.let(MediaController::releaseFuture)
-        }
-    }
-
-    LaunchedEffect(controller) {
-        controller?.apply {
-            setMediaItem(item)
-            prepare()
-            play()
         }
     }
 

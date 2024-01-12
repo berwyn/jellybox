@@ -41,6 +41,9 @@ class OnboardingScreenViewModel(
     var hasError by mutableStateOf(false)
         private set
 
+    val hideNavigation = appState::hideNavigation
+    val restoreNavigation = appState::showNavigation
+
     fun discoverLocalServers() {
         viewModelScope.launch {
             // For whatever reason, this call doesn't move itself onto the IO dispatcher, so we have to do it manually
@@ -113,13 +116,5 @@ class OnboardingScreenViewModel(
             }
 
         }
-    }
-
-    fun hideNavigation() {
-        appState.navigationHidden = true
-    }
-
-    fun restoreNavigation() {
-        appState.navigationHidden = true
     }
 }

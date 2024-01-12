@@ -17,6 +17,7 @@ class ApplicationState(
 ) {
     var navigationType: NavigationType by mutableStateOf(NavigationType.Bar)
     var navigationHidden: Boolean by mutableStateOf(false)
+        private set
 
     var selectedServer: JellyfinServer? by mutableStateOf(null)
 
@@ -30,6 +31,17 @@ class ApplicationState(
         }
     }
 
+    var selectedMediaItem: String? by mutableStateOf(null)
+        private set
+
+    val isVideoSelected: Boolean by derivedStateOf {
+        if (selectedMediaItem == null) {
+            false
+        } else {
+            true // TODO: Actually check this
+        }
+    }
+
     suspend fun ensureSession() = Result.runCatching {
         val client = jellyfinClient
 
@@ -39,5 +51,21 @@ class ApplicationState(
 
         client.userId = user.id
         client
+    }
+
+    fun hideNavigation() {
+        navigationHidden = true
+    }
+
+    fun showNavigation() {
+        navigationHidden = false
+    }
+
+    fun selectMediaItem(value: String) {
+        selectedMediaItem = value
+    }
+
+    fun clearMediaSelection() {
+        selectedMediaItem = null
     }
 }

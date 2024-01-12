@@ -14,6 +14,8 @@ fun JellyboxApp() {
         JellyboxNavigation(
             navigationState = navState,
             navigationHidden = appState.navigationHidden,
+            showBottomSheet = appState.selectedMediaItem != null,
+            allowBottomSheetSwipe = appState.isVideoSelected.not(),
         )
     }
 }

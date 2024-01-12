@@ -2,13 +2,18 @@ package dev.berwyn.jellybox.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
 import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.skydoves.orbital.Orbital
@@ -26,10 +31,12 @@ import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 
 @Composable
-@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class, ExperimentalMaterial3Api::class)
 fun JellyboxNavigation(
     navigationState: NavigationState = rememberNavigationState(),
     navigationHidden: Boolean = false,
+    showBottomSheet: Boolean = false,
+    allowBottomSheetSwipe: Boolean = true,
 ) {
     val currentDestination = navigationState.currentDestination
 
@@ -79,7 +86,21 @@ fun JellyboxNavigation(
                     }
                 }
             ) {
-                content()
+                val peekHeight = if (showBottomSheet) 56.dp else 0.dp
+
+                BottomSheetScaffold(
+                    sheetShape = RectangleShape,
+                    sheetDragHandle = null,
+                    sheetSwipeEnabled = allowBottomSheetSwipe,
+                    sheetPeekHeight = peekHeight,
+                    sheetContent = {
+                        Text("Bottom Sheet")
+                    },
+                ) { contentPadding ->
+                    Box(modifier = Modifier.padding(contentPadding)) {
+                        content()
+                    }
+                }
             }
         }
     }
