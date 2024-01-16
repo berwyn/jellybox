@@ -11,9 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 
 @Composable
-fun PreviewReplacer(title: String, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun PreviewReplacer(title: String, modifier: Modifier = Modifier, content: @Composable () -> Unit) =
     if (LocalInspectionMode.current) {
-        Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondaryContainer)) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+        ) {
             Text(
                 text = title,
                 modifier = Modifier.align(Alignment.Center),
@@ -23,4 +27,3 @@ fun PreviewReplacer(title: String, modifier: Modifier = Modifier, content: @Comp
     } else {
         content()
     }
-}

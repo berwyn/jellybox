@@ -27,7 +27,7 @@ class DatabaseSelectActiveServerUseCase(
             ?.apply { isSelected = true }
             ?.let {
                 database.serverDao().updateServer(it)
-                applicationState.selectedServer = it
+                applicationState.selectServer(it)
 
                 applicationState.jellyfinClient?.let { client ->
                     try {

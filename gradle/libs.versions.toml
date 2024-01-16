@@ -1,0 +1,67 @@
+[versions]
+compose = "2023.10.01"
+okhttp = "4.11.0"
+
+atomicfu = "0.21.0"
+store5 = "5.0.0-beta01"
+voyager = "1.0.0"
+lyricist = "1.6.2"
+
+androidx-media3 = "1.2.0"
+
+accompanist-flowlayout = "0.30.0"
+accompanist-systemuicontroller = "0.28.0"
+
+koin-android = "3.4.2"
+koin-androidx-compose = "3.4.5"
+
+kotlinx-collections-immutable = "0.3.5"
+kotlinx-coroutines-jdk8 = "1.7.3"
+kotlinx-serialization-json = "1.5.1"
+
+landscapist = "2.2.2"
+orbital = "0.3.3"
+
+[libraries]
+bom-compose = { module = "androidx.compose:compose-bom", version.ref = "compose" }
+bom-okhttp = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }
+
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist-flowlayout" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller" }
+
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-android" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-androidx-compose" }
+koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koin-androidx-compose" }
+
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
+kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines-jdk8" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+
+landscapist-coil = { module = "com.github.skydoves:landscapist-coil", version.ref = "landscapist" }
+landscapist-palette = { module = "com.github.skydoves:landscapist-palette", version.ref = "landscapist" }
+landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholder", version.ref = "landscapist" }
+orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
+
+media3-exoplayer-rtsp = { module = "androidx.media3:media3-exoplayer-rtsp", version.ref = "androidx-media3" }
+media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "androidx-media3" }
+media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "androidx-media3" }
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "androidx-media3" }
+media3-extractor = { module = "androidx.media3:media3-extractor", version.ref = "androidx-media3" }
+media3-session = { module = "androidx.media3:media3-session", version.ref = "androidx-media3" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "androidx-media3" }
+media3-datasource-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "androidx-media3" }
+
+voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+voyager-screenModel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
+voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
+voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
+voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
+voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
+
+lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
+lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
+
+atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
+store5 = { module = "org.mobilenativefoundation.store:store5", version.ref = "store5" }
+
+[plugins]

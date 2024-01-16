@@ -4,6 +4,7 @@ plugins {
     id("com.google.devtools.ksp")
 
     kotlin("plugin.serialization")
+    kotlin("plugin.parcelize")
 }
 
 android {
@@ -66,21 +67,20 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     ksp("androidx.room:room-compiler:2.6.1")
+    ksp(libs.lyricist.processor)
 
-    val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+    implementation(platform(libs.bom.compose))
+    androidTestImplementation(platform(libs.bom.compose))
 
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(platform(libs.bom.okhttp))
 
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
+    implementation(libs.kotlinx.coroutines.jdk8)
+    implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.kotlinx.serialization.json)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-
-    implementation("io.insert-koin:koin-android:3.4.2")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.5")
-    implementation("io.insert-koin:koin-androidx-compose-navigation:3.4.5")
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose.navigation)
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -98,14 +98,15 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.room:room-paging:2.6.1")
     implementation("androidx.tracing:tracing-ktx:1.2.0")
-    implementation("androidx.media3:media3-datasource-okhttp:1.2.0")
-    implementation("androidx.media3:media3-ui:1.2.0")
-    implementation("androidx.media3:media3-session:1.2.0")
-    implementation("androidx.media3:media3-extractor:1.2.0")
-    implementation("androidx.media3:media3-exoplayer:1.2.0")
-    implementation("androidx.media3:media3-exoplayer-hls:1.2.0")
-    implementation("androidx.media3:media3-exoplayer-dash:1.2.0")
-    implementation("androidx.media3:media3-exoplayer-rtsp:1.2.0")
+
+    implementation(libs.media3.datasource.okhttp)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.session)
+    implementation(libs.media3.extractor)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.hls)
+    implementation(libs.media3.exoplayer.dash)
+    implementation(libs.media3.exoplayer.rtsp)
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -118,16 +119,26 @@ dependencies {
 
     implementation("org.jellyfin.sdk:jellyfin-core:1.4.2")
 
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.30.0")
+    implementation(libs.voyager.navigator)
+    implementation(libs.voyager.bottomSheetNavigator)
+    implementation(libs.voyager.tabNavigator)
+    implementation(libs.voyager.screenModel)
+    implementation(libs.voyager.transitions)
+    implementation(libs.voyager.koin)
 
-    implementation("org.mobilenativefoundation.store:store5:5.0.0-beta01")
-    implementation("org.jetbrains.kotlinx:atomicfu:0.21.0")
+    implementation(libs.lyricist)
 
-    implementation("com.github.skydoves:landscapist-coil:2.2.2")
-    implementation("com.github.skydoves:landscapist-palette:2.2.2")
-    implementation("com.github.skydoves:landscapist-placeholder:2.2.2")
-    implementation("com.github.skydoves:orbital:0.3.3")
+
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.flowlayout)
+
+    implementation(libs.store5)
+    implementation(libs.atomicfu)
+
+    implementation(libs.landscapist.coil)
+    implementation(libs.landscapist.palette)
+    implementation(libs.landscapist.placeholder)
+    implementation(libs.orbital)
 
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")

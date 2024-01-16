@@ -20,6 +20,7 @@ class ApplicationState(
         private set
 
     var selectedServer: JellyfinServer? by mutableStateOf(null)
+        private set
 
     val hasActiveServer: Boolean by derivedStateOf {
         selectedServer != null
@@ -67,5 +68,9 @@ class ApplicationState(
 
     fun clearMediaSelection() {
         selectedMediaItem = null
+    }
+
+    fun selectServer(server: JellyfinServer?) {
+        selectedServer = server
     }
 }
