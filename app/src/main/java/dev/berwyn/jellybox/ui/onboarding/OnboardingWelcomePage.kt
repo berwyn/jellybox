@@ -18,9 +18,10 @@ import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 @Composable
 fun OnboardingWelcomePage(
     onNextClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.padding(32.dp),
+        modifier = modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically),
     ) {

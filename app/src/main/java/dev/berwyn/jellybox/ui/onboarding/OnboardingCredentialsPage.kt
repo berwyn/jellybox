@@ -16,19 +16,19 @@ import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun OnboardingCredentialsPage(
     isLoading: Boolean,
     retainCredentials: Boolean,
     onRetainCredentialsChanged: (Boolean) -> Unit,
-    onLoginClicked: (username: String, password: String) -> Unit
+    onLoginClicked: (username: String, password: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(16.dp),
+        modifier = modifier.padding(16.dp),
     ) {
         OutlinedTextField(
             value = username,

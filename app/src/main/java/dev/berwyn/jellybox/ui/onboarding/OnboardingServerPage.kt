@@ -27,6 +27,7 @@ fun OnboardingServerPage(
     validateServer: (String) -> Unit,
     onNextClicked: () -> Unit,
     onBackClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var text by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
@@ -43,7 +44,7 @@ fun OnboardingServerPage(
             .collect(validateServer)
     }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(16.dp)) {
         OutlinedTextField(
             value = text,
             onValueChange = { text = it },

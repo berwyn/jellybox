@@ -80,7 +80,10 @@ fun HomeScreenAppbar(
                     DropdownMenuItem(
                         leadingIcon = { Icon(Icons.Default.Add, contentDescription = null) },
                         text = { Text(strings.addNewServer) },
-                        onClick = onCreateNewServer,
+                        onClick = {
+                            isMenuOpen = false
+                            onCreateNewServer()
+                        },
                     )
                 }
             }

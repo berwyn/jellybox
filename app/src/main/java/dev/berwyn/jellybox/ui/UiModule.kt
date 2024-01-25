@@ -12,7 +12,6 @@ val uiModule = module {
     includes(screensModule)
 
     viewModelOf(::JellyboxAppViewModel)
-    viewModelOf(::HomeScreenViewModel)
 
     viewModelOf(::OnboardingScreenViewModel)
 

@@ -14,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
@@ -21,6 +22,18 @@ import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
+
+@Composable
+private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
+    val layoutDirection = LocalLayoutDirection.current
+
+    return PaddingValues(
+        start = this.calculateStartPadding(layoutDirection) + other.calculateStartPadding(layoutDirection),
+        end = this.calculateEndPadding(layoutDirection) + other.calculateEndPadding(layoutDirection),
+        top = this.calculateTopPadding() + other.calculateTopPadding(),
+        bottom = this.calculateBottomPadding() + other.calculateBottomPadding(),
+    )
+}
 
 private data class WizardPage(
     val name: String,
@@ -50,6 +63,7 @@ interface WizardScope {
 @OptIn(ExperimentalFoundationApi::class)
 fun Wizard(
     modifier: Modifier = Modifier,
+    indicatorPadding: PaddingValues = PaddingValues(),
     backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
     activeColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     inactiveColor: Color = MaterialTheme.colorScheme.tertiary,
@@ -97,7 +111,7 @@ fun Wizard(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor)
+            .background(backgroundColor),
     ) {
         HorizontalPager(
             state = pagerState,
@@ -119,7 +133,7 @@ fun Wizard(
             inactiveColor = inactiveColor,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
+                .padding(indicatorPadding + PaddingValues(16.dp))
         )
     }
 }
