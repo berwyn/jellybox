@@ -1,8 +1,10 @@
 plugins {
-    id("com.android.application") version "8.2.1" apply false
-    id("com.android.library") version "8.2.1" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.21" apply false
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15" apply false
-    kotlin("plugin.serialization") version "1.9.21" apply false
-    kotlin("plugin.parcelize") version "1.9.21" apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.molecule) apply false
+
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
 }
