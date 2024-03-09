@@ -22,10 +22,6 @@ data class HomeScreenModel(
     sealed class State {
         data object Onboarding : State()
 
-        data class SelectingServer(
-            val servers: ImmutableList<Server>
-        ) : State()
-
         data class Ready(
             val servers: ImmutableList<Server>,
             val activeServer: Server?
@@ -44,12 +40,6 @@ data class HomeScreenModel(
     fun selectServer(server: Server) {
         screenModelScope.launch {
             selectActiveServer(server)
-        }
-    }
-
-    fun disconnectServer() {
-        screenModelScope.launch {
-            selectActiveServer(null)
         }
     }
 

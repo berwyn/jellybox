@@ -2,12 +2,9 @@ package dev.berwyn.jellybox.ui.screens.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,20 +34,6 @@ class HomeScreen : ParcelableScreen {
                     OnboardingScreen(onSetupComplete = model::completeOnboarding)
                 }
 
-                is HomeScreenModel.State.SelectingServer -> {
-                    val (servers) = it
-
-                    Scaffold { contentPadding ->
-                        LazyColumn(modifier = Modifier.padding(contentPadding)) {
-                            items(count = servers.count(), key = { index -> servers[index].id }) { index ->
-                                val server = servers[index]
-
-                                Text(server.name, modifier = Modifier.clickable { model.selectServer(server) })
-                            }
-                        }
-                    }
-                }
-
                 is HomeScreenModel.State.Ready -> {
                     val (servers, activeServer) = it
 
@@ -70,9 +53,6 @@ class HomeScreen : ParcelableScreen {
 
                                 activeServer?.let {
                                     Text("Connected to ${it.name}")
-                                    Button(onClick = { model.disconnectServer() }) {
-                                        Text("Disconnect")
-                                    }
                                 }
                             }
 

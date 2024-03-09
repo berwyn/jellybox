@@ -18,7 +18,13 @@ class DatabaseSelectActiveServerUseCase(
                 database.serverQueries.setSelected(default.id)
             }
             server != null -> {
-                database.serverQueries.setSelected(server.id)
+                val current = database.serverQueries.getSelectedServer().executeAsOneOrNull()
+
+                if (current?.id == server.id) {
+                    database.serverQueries.deselectAll()
+                } else {
+                    database.serverQueries.setSelected(server.id)
+                }
             }
             else -> {
                 database.serverQueries.deselectAll()

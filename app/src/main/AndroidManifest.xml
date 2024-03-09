@@ -27,7 +27,7 @@
         android:theme="@style/Theme.Jellybox"
         tools:targetApi="33">
         <activity
-            android:name=".MainActivity"
+            android:name=".JellyboxActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.Jellybox"

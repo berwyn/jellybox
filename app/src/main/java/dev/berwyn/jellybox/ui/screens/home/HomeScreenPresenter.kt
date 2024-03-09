@@ -20,7 +20,6 @@ fun homeScreenPresenter(
 
     return when {
         onboardingRequested || servers.isEmpty() -> HomeScreenModel.State.Onboarding
-        activeServer == null -> HomeScreenModel.State.SelectingServer(servers)
         else -> HomeScreenModel.State.Ready(servers, activeServer)
     }
 }

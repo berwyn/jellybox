@@ -19,12 +19,13 @@ import dev.berwyn.jellybox.ui.locals.LocalWindowSizeClass
 import dev.berwyn.jellybox.ui.util.detectNavigationType
 import org.koin.android.ext.android.inject
 
-class MainActivity : ComponentActivity() {
+class JellyboxActivity : ComponentActivity() {
 
     val appState: ApplicationState by inject()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val imageLoader = ImageLoader.Builder(this)
@@ -43,7 +44,6 @@ class MainActivity : ComponentActivity() {
             }
             .build()
 
-        enableEdgeToEdge()
 
         setContent {
             val sizeClass = calculateWindowSizeClass(this)
