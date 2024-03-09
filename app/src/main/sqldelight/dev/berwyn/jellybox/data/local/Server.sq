@@ -1,0 +1,65 @@
+import io.ktor.http.Url;
+import java.util.UUID;
+import kotlin.Boolean;
+
+CREATE TABLE Server (
+    id TEXT AS UUID PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    url TEXT AS Url NOT NULL,
+    isDefault INTEGER AS Boolean DEFAULT 0,
+    isSelected INTEGER AS Boolean DEFAULT 0
+);
+
+getCount:
+SELECT COUNT(*)
+FROM Server;
+
+getAll:
+SELECT *
+FROM Server;
+
+getServerById:
+SELECT *
+FROM Server
+WHERE id = ?;
+
+getServeryByUrl:
+SELECT *
+FROM Server
+WHERE url = ?;
+
+getDefaultServer:
+SELECT *
+FROM Server
+WHERE isDefault = 1;
+
+getSelectedServer:
+SELECT *
+FROM Server
+WHERE isSelected = 1;
+
+insert:
+INSERT OR REPLACE INTO Server(id, name, url, isDefault, isSelected)
+VALUES ?;
+
+setDefault {
+    UPDATE Server
+    SET isDefault = 0;
+
+    UPDATE Server
+    SET isDefault = 1
+    WHERE id = ?;
+}
+
+deselectAll:
+UPDATE Server
+SET isSelected = 0;
+
+setSelected {
+    UPDATE Server
+    SET isSelected = 0;
+
+    UPDATE Server
+    SET isSelected = 1
+    WHERE id = ?;
+}

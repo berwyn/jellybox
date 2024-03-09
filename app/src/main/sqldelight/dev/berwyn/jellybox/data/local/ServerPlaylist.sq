@@ -1,0 +1,11 @@
+import java.util.UUID;
+
+CREATE TABLE ServerPlaylist (
+    playlistId TEXT AS UUID NOT NULL,
+    serverId TEXT AS UUID NOT NULL,
+
+    PRIMARY KEY (playlistId, serverId),
+
+    FOREIGN KEY (playlistId) REFERENCES Playlist(id),
+    FOREIGN KEY (serverId) REFERENCES Server(id)
+);

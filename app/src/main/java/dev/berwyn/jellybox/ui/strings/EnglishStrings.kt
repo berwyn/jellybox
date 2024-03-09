@@ -11,4 +11,9 @@ val EnglishStrings = Strings(
         }
     },
     addNewServer = "Add new server",
+
+    playbackNext = "Next",
+    playbackPlay = "Play",
+    playbackPause = "Pause",
+    playbackPrevious = "Previous"
 )

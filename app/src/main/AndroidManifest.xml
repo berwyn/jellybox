@@ -3,9 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- System permissions to allow background playback -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+
+    <!-- Custom permissions to guard the media playback service -->
+    <permission-group android:name="dev.berwyn.jellybox.MEDIA_PLAYBACK" />
+    <permission android:name="dev.berwyn.jellybox.MEDIA_PLAYBACK_SERVICE"
+                android:permissionGroup="dev.berwyn.jellybox.MEDIA_PLAYBACK"
+                android:protectionLevel="signature" />
 
     <application
         android:name=".JellyboxApplication"
@@ -32,9 +40,10 @@
         </activity>
 
         <service
-            android:name=".media.JellyboxMediaService"
+            android:name=".features.playback.JellyboxMediaService"
             android:foregroundServiceType="mediaPlayback|mediaProjection"
-            android:exported="true">
+            android:exported="true"
+            android:permission="dev.berwyn.jellybox.MEDIA_PLAYBACK_SERVICE">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>

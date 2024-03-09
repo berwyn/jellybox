@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.lyricist.LocalStrings
-import dev.berwyn.jellybox.data.local.JellyfinServer
+import dev.berwyn.jellybox.data.local.Server
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.PreviewHost
 import dev.berwyn.jellybox.ui.previews.PreviewServerProvider
@@ -40,9 +40,9 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreenAppbar(
-    selectedServer: JellyfinServer?,
-    savedServers: ImmutableList<JellyfinServer>,
-    onServerSelected: (JellyfinServer) -> Unit,
+    selectedServer: Server?,
+    savedServers: ImmutableList<Server>,
+    onServerSelected: (Server) -> Unit,
     onCreateNewServer: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -92,7 +92,7 @@ fun HomeScreenAppbar(
 }
 
 @Composable
-private fun ServerChip(server: JellyfinServer, modifier: Modifier = Modifier) {
+private fun ServerChip(server: Server, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.sizeIn(maxHeight = 48.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -115,7 +115,7 @@ private fun ServerChip(server: JellyfinServer, modifier: Modifier = Modifier) {
 @ThemePreviews
 @DynamicColourPreviews
 private fun HomeScreenAppbarPreview(
-    @PreviewParameter(PreviewServerProvider::class) server: JellyfinServer?,
+    @PreviewParameter(PreviewServerProvider::class) server: Server?,
 ) {
     PreviewHost {
         HomeScreenAppbar(

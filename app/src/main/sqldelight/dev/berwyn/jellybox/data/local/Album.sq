@@ -1,0 +1,18 @@
+import java.util.UUID;
+
+CREATE TABLE Album (
+    id TEXT AS UUID PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    duration INTEGER NOT NULL
+);
+
+upsert:
+INSERT OR REPLACE INTO Album(id, name, duration)
+VALUES (:id, :name, :duration)
+;
+
+getById:
+SELECT *
+FROM Album
+WHERE id = ?
+;

@@ -1,15 +1,19 @@
 package dev.berwyn.jellybox.ui.previews
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import dev.berwyn.jellybox.data.local.JellyfinServer
+import dev.berwyn.jellybox.data.local.Server
+import io.ktor.http.Url
+import java.util.UUID
 
-class PreviewServerProvider : PreviewParameterProvider<JellyfinServer?> {
-    override val values: Sequence<JellyfinServer?> = sequenceOf(
+class PreviewServerProvider : PreviewParameterProvider<Server?> {
+    override val values: Sequence<Server?> = sequenceOf(
         null,
-        JellyfinServer(
-            id = 0,
+        Server(
+            id = UUID.randomUUID(),
             name = "Example Server",
-            uri = "https://fake.url",
+            url = Url("https://fake.url"),
+            isDefault = false,
+            isSelected = false,
         )
     )
 }

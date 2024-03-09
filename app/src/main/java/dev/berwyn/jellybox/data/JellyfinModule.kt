@@ -16,6 +16,4 @@ val jellyfinModule = module {
             context = androidContext()
         }
     }
-
-    singleOf(::DatabaseJellyfinServerRepository)
 }

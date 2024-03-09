@@ -1,0 +1,17 @@
+import java.util.UUID;
+
+CREATE TABLE Track (
+    id TEXT AS UUID PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    duration INTEGER NOT NULL,
+
+    albumId TEXT AS UUID NOT NULL,
+
+    FOREIGN KEY (albumId) REFERENCES Album(id)
+);
+
+getTracksForAlbum:
+SELECT *
+FROM Track
+WHERE albumId = ?
+;

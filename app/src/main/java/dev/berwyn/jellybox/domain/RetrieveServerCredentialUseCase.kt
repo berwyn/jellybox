@@ -1,10 +1,10 @@
 package dev.berwyn.jellybox.domain
 
 import android.content.SharedPreferences
-import dev.berwyn.jellybox.data.local.JellyfinServer
+import dev.berwyn.jellybox.data.local.Server
 
 class RetrieveServerCredentialUseCase(
     private val securePrefs: SharedPreferences
 ) {
-    operator fun invoke(server: JellyfinServer) = securePrefs.getString("server/${server.uri}", null)
+    operator fun invoke(server: Server) = securePrefs.getString("server/${server.url}", null)
 }

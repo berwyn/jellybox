@@ -1,0 +1,11 @@
+import java.util.UUID;
+
+CREATE TABLE ServerTrack (
+    trackId TEXT AS UUID NOT NULL,
+    serverId TEXT AS UUID NOT NULL,
+
+    PRIMARY KEY (trackId, serverId),
+
+    FOREIGN KEY (trackId) REFERENCES Track(id),
+    FOREIGN KEY (serverId) REFERENCES Server(id)
+);

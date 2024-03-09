@@ -1,0 +1,6 @@
+import java.util.UUID;
+
+CREATE TABLE Playlist (
+    id TEXT AS UUID PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL
+);

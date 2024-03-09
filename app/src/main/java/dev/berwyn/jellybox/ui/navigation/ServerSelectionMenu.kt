@@ -6,15 +6,18 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import dev.berwyn.jellybox.data.local.JellyfinServer
+import dev.berwyn.jellybox.data.local.Server
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
+import io.ktor.http.Url
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import java.util.UUID
 
 @Composable
 fun ServerSelectionMenu(
-    servers: List<JellyfinServer>,
+    servers: ImmutableList<Server>,
     modifier: Modifier = Modifier,
-    onServerSelected: (JellyfinServer) -> Unit
+    onServerSelected: (Server) -> Unit
 ) {
     var isOpen by remember { mutableStateOf(false) }
 
@@ -42,7 +45,13 @@ fun ServerSelectionMenu(
 fun ServerSelectionMenuPreview() {
     ServerSelectionMenu(
         servers = persistentListOf(
-            JellyfinServer.create("Test", "https://test.server/"),
+            Server(
+                UUID.randomUUID(),
+                "Test",
+                Url("https://test.server/"),
+                false,
+                false,
+            )
         ),
         onServerSelected = { }
     )

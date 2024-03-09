@@ -4,7 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
+
     alias(libs.plugins.molecule)
+    alias(libs.plugins.sqldelight)
 }
 
 android {
@@ -57,16 +59,17 @@ kotlin {
     jvmToolchain(17)
 }
 
-ksp {
-    arg("room.schemaLocation", File(projectDir, "schemas").path)
-    arg("room.incremental", "true")
-    arg("room.expandProjection", "true")
+sqldelight {
+    databases {
+        create("Jellybox") {
+            packageName.set("dev.berwyn.jellybox.data.local")
+        }
+    }
 }
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    ksp("androidx.room:room-compiler:2.6.1")
     ksp(libs.lyricist.processor)
 
     implementation(platform(libs.bom.compose))
@@ -93,9 +96,6 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.security:security-crypto:1.0.0")
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    implementation("androidx.room:room-paging:2.6.1")
     implementation("androidx.tracing:tracing-ktx:1.2.0")
 
     implementation(libs.media3.datasource.okhttp)
@@ -116,7 +116,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha03")
     implementation("androidx.compose.runtime:runtime-tracing:1.0.0-beta01")
 
-    implementation("org.jellyfin.sdk:jellyfin-core:1.4.2")
+    implementation("org.jellyfin.sdk:jellyfin-core:1.4.6")
 
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.bottomSheetNavigator)
@@ -133,6 +133,8 @@ dependencies {
 
     implementation(libs.store5)
     implementation(libs.atomicfu)
+    implementation(libs.sqldelight.android)
+    implementation(libs.sqldelight.coroutines)
 
     implementation(libs.landscapist.coil)
     implementation(libs.landscapist.palette)

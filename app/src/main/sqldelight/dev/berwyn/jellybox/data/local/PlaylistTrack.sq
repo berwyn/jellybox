@@ -1,0 +1,11 @@
+import java.util.UUID;
+
+CREATE TABLE PlaylistTrack (
+    playlistId TEXT AS UUID,
+    trackId TEXT AS UUID,
+
+    PRIMARY KEY (playlistId, trackId),
+
+    FOREIGN KEY (playlistId) REFERENCES Playlist(id),
+    FOREIGN KEY (trackId) REFERENCES Track(id)
+);

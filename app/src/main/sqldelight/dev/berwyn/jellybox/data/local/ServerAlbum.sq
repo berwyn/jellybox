@@ -1,0 +1,11 @@
+import java.util.UUID;
+
+CREATE TABLE ServerAlbum (
+    albumId TEXT AS UUID NOT NULL,
+    serverId TEXT AS UUID NOT NULL,
+
+    PRIMARY KEY (albumId, serverId),
+
+    FOREIGN KEY (albumId) REFERENCES Album(id),
+    FOREIGN KEY (serverId) REFERENCES Server(id)
+);

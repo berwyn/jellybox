@@ -10,7 +10,7 @@ import cafe.adriel.voyager.navigator.parcelableNavigatorSaver
 import dev.berwyn.jellybox.ui.previews.DevicePreviews
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
-import dev.berwyn.jellybox.ui.screens.HomeScreen
+import dev.berwyn.jellybox.ui.screens.home.HomeScreen
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 
 @Composable
