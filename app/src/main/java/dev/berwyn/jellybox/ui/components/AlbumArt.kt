@@ -10,7 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import com.skydoves.landscapist.coil.CoilImage
 import dev.berwyn.jellybox.data.local.Album
-import dev.berwyn.jellybox.ui.locals.LocalJellyfinClient
+import dev.berwyn.jellybox.ui.locals.JellyfinClientState
+import dev.berwyn.jellybox.ui.locals.LocalJellyfinClientState
 import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.model.api.ImageType
 
@@ -29,14 +30,20 @@ fun AlbumArt(
                 .then(Modifier.background(MaterialTheme.colorScheme.secondaryContainer))
         )
     } else {
-        val client = LocalJellyfinClient.current
-        val url = remember(album) {
-            client.imageApi.getItemImageUrl(album.id, ImageType.PRIMARY)
-        }
+        when (val state = LocalJellyfinClientState.current) {
+            is JellyfinClientState.Unset -> {}
+            is JellyfinClientState.Configured -> {
+                val (client) = state
 
-        CoilImage(
-            imageModel = { url },
-            modifier = modifier.then(aspectModifier)
-        )
+                val url = remember(album) {
+                    client.imageApi.getItemImageUrl(album.id, ImageType.PRIMARY)
+                }
+
+                CoilImage(
+                    imageModel = { url },
+                    modifier = modifier.then(aspectModifier)
+                )
+            }
+        }
     }
 }
