@@ -12,8 +12,14 @@ val EnglishStrings = Strings(
     },
     addNewServer = "Add new server",
 
-    playbackNext = "Next",
-    playbackPlay = "Play",
-    playbackPause = "Pause",
-    playbackPrevious = "Previous"
+    homeScreen = HomeScreenStrings(
+        latestAlbums = "Latest Albums"
+    ),
+
+    playback = PlaybackStrings(
+        next = "Next",
+        play = "Play",
+        pause = "Pause",
+        previous = "Previous",
+    ),
 )

@@ -65,15 +65,15 @@ private fun MediaPlayer(
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             IconButton(modifier = Modifier.height(height), onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.SkipPrevious, strings.playbackPrevious)
+                Icon(Icons.Default.SkipPrevious, strings.playback.previous)
             }
 
             IconButton(modifier = Modifier.height(height), onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.PlayArrow, strings.playbackPlay)
+                Icon(Icons.Default.PlayArrow, strings.playback.play)
             }
 
             IconButton(modifier = Modifier.height(height), onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.SkipNext, strings.playbackNext)
+                Icon(Icons.Default.SkipNext, strings.playback.next)
             }
         }
     }

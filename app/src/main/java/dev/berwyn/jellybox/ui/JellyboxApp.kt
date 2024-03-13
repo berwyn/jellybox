@@ -10,7 +10,9 @@ import androidx.compose.runtime.setValue
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import cafe.adriel.lyricist.ProvideStrings
+import dev.berwyn.jellybox.data.ApplicationState
 import dev.berwyn.jellybox.data.local.Jellybox
+import dev.berwyn.jellybox.domain.CreateClientUseCase
 import dev.berwyn.jellybox.domain.RetrieveServerCredentialUseCase
 import dev.berwyn.jellybox.ui.locals.JellyfinClientState
 import dev.berwyn.jellybox.ui.locals.LocalJellyfinClientState
@@ -24,8 +26,8 @@ import org.koin.compose.koinInject
 @Composable
 fun JellyboxApp(
     jellybox: Jellybox = koinInject(),
-    jellyfin: Jellyfin = koinInject(),
-    retrieveServerCredential: RetrieveServerCredentialUseCase = koinInject(),
+    applicationState: ApplicationState = koinInject(),
+    createClient: CreateClientUseCase = koinInject(),
 ) {
     var jellyfinClientState: JellyfinClientState by remember {
         mutableStateOf(JellyfinClientState.Unset)
@@ -39,19 +41,10 @@ fun JellyboxApp(
                 if (server == null) {
                     jellyfinClientState = JellyfinClientState.Unset
                 } else {
-                    val client = jellyfin.createApi(
-                        baseUrl = server.url.toString(),
-                        accessToken = retrieveServerCredential(server),
-                    )
+                    val client = createClient(server, validateSession = true)
 
-                    try {
-                        val user by client.userApi.getCurrentUser()
-                        client.userId = user.id
-
-                        jellyfinClientState = JellyfinClientState.Configured(client)
-                    } catch (e: InvalidStatusException) {
-                        jellyfinClientState = JellyfinClientState.Unset
-                    }
+                    jellyfinClientState = JellyfinClientState.Configured(client)
+                    applicationState.currentClient = client
                 }
             }
     }

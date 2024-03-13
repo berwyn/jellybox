@@ -1,5 +1,6 @@
 package dev.berwyn.jellybox.ui.screens.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,12 +18,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.LocalStrings
+import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.berwyn.jellybox.data.local.Album
 import dev.berwyn.jellybox.ui.components.AlbumArt
 import dev.berwyn.jellybox.ui.locals.JellyfinClientState
 import dev.berwyn.jellybox.ui.locals.LocalJellyfinClientState
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
+import dev.berwyn.jellybox.ui.screens.album.AlbumScreen
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -65,10 +69,13 @@ fun LatestAlbumsRow(
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
-        .then(modifier)) {
-        // TODO: Translate + linkify
+        .then(modifier),
+    ) {
+        val strings = LocalStrings.current
+        val navigator = LocalNavigator.current
+
         Text(
-            text = "Latest Albums",
+            text = strings.homeScreen.latestAlbums,
             modifier = Modifier.padding(horizontal = 16.dp),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.titleLarge,
@@ -81,7 +88,12 @@ fun LatestAlbumsRow(
             items(albums.count(), key = { index -> albums[index].id }) { index ->
                 val album = albums[index]
 
-                AlbumArt(album = album, modifier = Modifier.width(192.dp))
+                AlbumArt(
+                    album = album,
+                    modifier = Modifier.width(192.dp).clickable {
+                        navigator?.push(AlbumScreen(album.id))
+                    },
+                )
             }
         }
     }

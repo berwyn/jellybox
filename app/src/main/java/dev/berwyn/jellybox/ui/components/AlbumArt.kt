@@ -14,11 +14,19 @@ import dev.berwyn.jellybox.ui.locals.JellyfinClientState
 import dev.berwyn.jellybox.ui.locals.LocalJellyfinClientState
 import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.jellyfin.sdk.model.api.ImageType
+import java.util.UUID
 
-// TODO: Proxy through ServerAlbum to ensure the correct remote ID
 @Composable
 fun AlbumArt(
     album: Album,
+    modifier: Modifier = Modifier,
+) {
+    AlbumArt(albumId = album.id, modifier = modifier)
+}
+
+@Composable
+fun AlbumArt(
+    albumId: UUID,
     modifier: Modifier = Modifier,
 ) {
     val aspectModifier = Modifier.aspectRatio(1.0f)
@@ -35,8 +43,8 @@ fun AlbumArt(
             is JellyfinClientState.Configured -> {
                 val (client) = state
 
-                val url = remember(album) {
-                    client.imageApi.getItemImageUrl(album.id, ImageType.PRIMARY)
+                val url = remember(albumId) {
+                    client.imageApi.getItemImageUrl(albumId, ImageType.PRIMARY)
                 }
 
                 CoilImage(

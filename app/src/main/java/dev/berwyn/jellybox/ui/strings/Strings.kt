@@ -4,8 +4,17 @@ data class Strings(
     val serverLabel: (count: Int) -> String,
     val addNewServer: String,
 
-    val playbackPrevious: String,
-    val playbackPlay: String,
-    val playbackPause: String,
-    val playbackNext: String,
+    val homeScreen: HomeScreenStrings,
+    val playback: PlaybackStrings,
+)
+
+data class HomeScreenStrings(
+    val latestAlbums: String
+)
+
+data class PlaybackStrings (
+    val previous: String,
+    val play: String,
+    val pause: String,
+    val next: String,
 )

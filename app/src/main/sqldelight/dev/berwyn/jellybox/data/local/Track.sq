@@ -10,6 +10,10 @@ CREATE TABLE Track (
     FOREIGN KEY (albumId) REFERENCES Album(id) ON DELETE CASCADE
 );
 
+upsert:
+INSERT OR REPLACE INTO Track(id, name, duration, albumId)
+VALUES ?;
+
 getTracksForAlbum:
 SELECT *
 FROM Track

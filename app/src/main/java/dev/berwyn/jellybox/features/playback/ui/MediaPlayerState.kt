@@ -66,10 +66,8 @@ class MediaPlayerState(
             MediaController.releaseFuture(controllerFuture)
         }
 
-        viewModelScope.launch {
-            applicationState.ensureSession().onSuccess {
-                jellyfinClient = it
-            }
+        applicationState.currentClient?.let {
+            jellyfinClient = it
         }
     }
 
