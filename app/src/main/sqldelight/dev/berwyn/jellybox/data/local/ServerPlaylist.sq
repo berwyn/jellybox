@@ -6,6 +6,6 @@ CREATE TABLE ServerPlaylist (
 
     PRIMARY KEY (playlistId, serverId),
 
-    FOREIGN KEY (playlistId) REFERENCES Playlist(id),
-    FOREIGN KEY (serverId) REFERENCES Server(id)
+    FOREIGN KEY (playlistId) REFERENCES Playlist(id) ON DELETE CASCADE,
+    FOREIGN KEY (serverId) REFERENCES Server(id) ON DELETE CASCADE
 );

@@ -43,6 +43,10 @@ val databaseModule = module {
                 idAdapter = UUIDAdapter,
                 albumIdAdapter = UUIDAdapter,
             ),
+            ServerAlbumAdapter = ServerAlbum.Adapter(
+                albumIdAdapter = UUIDAdapter,
+                serverIdAdapter = UUIDAdapter,
+            )
         )
     }
 }

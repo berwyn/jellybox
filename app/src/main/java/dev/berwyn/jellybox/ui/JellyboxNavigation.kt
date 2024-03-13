@@ -17,9 +17,7 @@ import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 @OptIn(ExperimentalVoyagerApi::class)
 fun JellyboxNavigation() {
     BottomSheetNavigator {
-        CompositionLocalProvider(
-            LocalNavigatorSaver provides parcelableNavigatorSaver()
-        ) {
+        CompositionLocalProvider(LocalNavigatorSaver provides parcelableNavigatorSaver()) {
             Navigator(HomeScreen())
         }
     }

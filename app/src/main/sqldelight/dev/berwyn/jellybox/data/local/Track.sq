@@ -7,7 +7,7 @@ CREATE TABLE Track (
 
     albumId TEXT AS UUID NOT NULL,
 
-    FOREIGN KEY (albumId) REFERENCES Album(id)
+    FOREIGN KEY (albumId) REFERENCES Album(id) ON DELETE CASCADE
 );
 
 getTracksForAlbum:

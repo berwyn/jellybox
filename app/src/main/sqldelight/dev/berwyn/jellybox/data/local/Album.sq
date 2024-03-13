@@ -8,11 +8,36 @@ CREATE TABLE Album (
 
 upsert:
 INSERT OR REPLACE INTO Album(id, name, duration)
-VALUES (:id, :name, :duration)
-;
+VALUES ?;
+
+upsertWithServer {
+    INSERT OR REPLACE INTO Album(id, name, duration)
+    VALUES (:id, :name, :duration);
+
+    INSERT OR IGNORE INTO ServerAlbum(albumId, serverId)
+    VALUES (:id, :serverId);
+}
+
+delete:
+DELETE FROM Album
+WHERE id = ?;
+
 
 getById:
 SELECT *
 FROM Album
 WHERE id = ?
+;
+
+getByServer:
+WITH
+selectedServer AS (
+    SELECT id FROM Server WHERE url = ?
+),
+serverAlbums AS (
+    SELECT albumId FROM ServerAlbum WHERE serverId IN selectedServer
+)
+SELECT *
+FROM Album
+WHERE id IN serverAlbums
 ;
