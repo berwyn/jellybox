@@ -1,5 +1,5 @@
 [versions]
-compose = "2024.02.02"
+compose = "2024.04.00"
 okhttp = "4.11.0"
 
 atomicfu = "0.21.0"
