@@ -73,7 +73,7 @@ class HomeScreen : ParcelableScreen {
                     ) { contentPadding ->
                         LazyColumn(contentPadding = contentPadding) {
                             item {
-                                LatestAlbumsRow()
+                                LatestAlbumsRow(server = activeServer)
                             }
                         }
                     }
@@ -81,4 +81,5 @@ class HomeScreen : ParcelableScreen {
             }
         }
     }
+
 }

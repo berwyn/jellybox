@@ -4,8 +4,15 @@ data class Strings(
     val serverLabel: (count: Int) -> String,
     val addNewServer: String,
 
+    val tabs: TabsStrings,
+
     val homeScreen: HomeScreenStrings,
     val playback: PlaybackStrings,
+)
+
+data class TabsStrings(
+    val home: String,
+    val albums: String,
 )
 
 data class HomeScreenStrings(

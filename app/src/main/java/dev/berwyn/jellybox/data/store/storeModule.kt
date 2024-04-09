@@ -35,25 +35,30 @@ typealias AlbumTrackStore = Store<Album, List<Track>>
 val storeModule = module {
     single<LatestAlbumStore>(named(Stores.LatestAlbums)) {
         val jellybox = get<Jellybox>()
-
         val createClient = get<CreateClientUseCase>()
 
         StoreBuilder.from<Server, List<Album>, List<Album>>(
-            fetcher = Fetcher.of { server: Server ->
-                val albums by createClient(server, validateSession = true)
-                    .userLibraryApi
-                    .getLatestMedia(
-                        includeItemTypes = listOf(BaseItemKind.MUSIC_ALBUM),
-                        limit = 5
-                    )
+            fetcher = Fetcher.ofResult { server: Server ->
+                val client = createClient(server, validateSession = true)
 
-                albums.map {
-                    Album(
-                        id = it.id,
-                        name = it.name!!,
-                        duration = it.runTimeTicks!!.div(600_000_000),
-                    )
+                runCatching {
+                    val albums by client.userLibraryApi
+                        .getLatestMedia(
+                            includeItemTypes = listOf(BaseItemKind.MUSIC_ALBUM),
+                            limit = 5
+                        )
+
+                    albums.map {
+                        Album(
+                            id = it.id,
+                            name = it.name!!,
+                            duration = it.runTimeTicks!!.div(600_000_000),
+                        )
+                    }
                 }
+                    .map { FetcherResult.Data(it) }
+                    .getOrElse { FetcherResult.Error.Exception(it) }
+
             },
             sourceOfTruth = SourceOfTruth.of(
                 reader = { server ->
@@ -97,12 +102,12 @@ val storeModule = module {
                     Album(
                         id = dto.id,
                         name = dto.name!!,
-                        duration = dto.runTimeTicks!!.div(600_000_000)
+                        // No idea what ticks are, but the official client uses this to convert to millis
+                        duration = dto.runTimeTicks!!.div(10000)
                     )
                 }
                     .map { FetcherResult.Data(it) }
-                    .recover { FetcherResult.Error.Exception(it) }
-                    .getOrThrow()
+                    .getOrElse { FetcherResult.Error.Exception(it) }
             },
             sourceOfTruth = SourceOfTruth.of(
                 reader = { id ->
@@ -136,14 +141,14 @@ val storeModule = module {
                         Track(
                             id = dto.id,
                             name = dto.name!!,
-                            duration = dto.runTimeTicks!!.div(600_000_000),
+                            // No idea what ticks are, but the official client uses this to convert to millis
+                            duration = dto.runTimeTicks!!.div(10000),
                             albumId = album.id,
                         )
                     }
                 }
                     .map { FetcherResult.Data(it) }
-                    .recover { FetcherResult.Error.Exception(it) }
-                    .getOrThrow()
+                    .getOrElse { FetcherResult.Error.Exception(it) }
             },
             sourceOfTruth = SourceOfTruth.of(
                 reader = { album ->

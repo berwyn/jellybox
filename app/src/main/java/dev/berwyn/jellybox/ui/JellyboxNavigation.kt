@@ -1,24 +1,49 @@
 package dev.berwyn.jellybox.ui
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
-import cafe.adriel.voyager.navigator.LocalNavigatorSaver
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
-import cafe.adriel.voyager.navigator.parcelableNavigatorSaver
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabNavigator
 import dev.berwyn.jellybox.ui.previews.DevicePreviews
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
-import dev.berwyn.jellybox.ui.screens.home.HomeScreen
+import dev.berwyn.jellybox.ui.screens.album.AlbumsTab
+import dev.berwyn.jellybox.ui.screens.home.HomeTab
 import dev.berwyn.jellybox.ui.theme.JellyboxTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+
+val tabs: ImmutableList<Tab> = persistentListOf(
+    HomeTab,
+    AlbumsTab
+)
 
 @Composable
-@OptIn(ExperimentalVoyagerApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 fun JellyboxNavigation() {
-    BottomSheetNavigator {
-        CompositionLocalProvider(LocalNavigatorSaver provides parcelableNavigatorSaver()) {
-            Navigator(HomeScreen())
+    BottomSheetNavigator { sheetNav ->
+        TabNavigator(HomeTab) { tabNav ->
+            NavigationSuiteScaffold(
+                navigationSuiteItems = {
+                    tabs.forEach {
+                        item(
+                            selected = tabNav.current == it,
+                            icon = { Icon(it.options.icon!!, contentDescription = null) },
+                            label = { Text(it.options.title) },
+                            onClick = { tabNav.current = it }
+                        )
+                    }
+                }
+            ) {
+                Crossfade(targetState = tabNav.current, label = "Tab") { tab ->
+                    tab.Content()
+                }
+            }
         }
     }
 }

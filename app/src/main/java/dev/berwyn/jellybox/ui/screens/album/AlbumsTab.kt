@@ -1,0 +1,32 @@
+package dev.berwyn.jellybox.ui.screens.album
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Album
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import cafe.adriel.lyricist.LocalStrings
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
+
+object AlbumsTab : Tab {
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = LocalStrings.current.tabs.albums
+            val icon = rememberVectorPainter(Icons.Default.Album)
+
+            return remember {
+                TabOptions(
+                    index = 1u,
+                    title, icon
+                )
+            }
+        }
+
+    @Composable
+    override fun Content() {
+        Text("Albums")
+    }
+}

@@ -1,9 +1,13 @@
 package dev.berwyn.jellybox.ui.screens.home
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,13 +21,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import cafe.adriel.lyricist.LocalStrings
 import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.berwyn.jellybox.data.local.Album
+import dev.berwyn.jellybox.data.local.Server
+import dev.berwyn.jellybox.data.store.LatestAlbumStore
+import dev.berwyn.jellybox.data.store.Stores
 import dev.berwyn.jellybox.ui.components.AlbumArt
-import dev.berwyn.jellybox.ui.locals.JellyfinClientState
-import dev.berwyn.jellybox.ui.locals.LocalJellyfinClientState
 import dev.berwyn.jellybox.ui.previews.DynamicColourPreviews
 import dev.berwyn.jellybox.ui.previews.ThemePreviews
 import dev.berwyn.jellybox.ui.screens.album.AlbumScreen
@@ -31,41 +38,58 @@ import dev.berwyn.jellybox.ui.theme.JellyboxTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import org.jellyfin.sdk.api.client.extensions.userLibraryApi
-import org.jellyfin.sdk.model.api.BaseItemKind
+import kotlinx.coroutines.flow.takeWhile
+import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
+import org.mobilenativefoundation.store.store5.StoreReadRequest
+import org.mobilenativefoundation.store.store5.StoreReadResponse
 import java.util.UUID
 
 @Composable
 fun LatestAlbumsRow(
+    server: Server,
     modifier: Modifier = Modifier,
+    latestAlbumStore: LatestAlbumStore = koinInject(named(Stores.LatestAlbums))
 ) {
-    val state = LocalJellyfinClientState.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     var albums: ImmutableList<Album> by remember {
         mutableStateOf(persistentListOf())
     }
 
-    LaunchedEffect(state) {
-        if (state is JellyfinClientState.Configured) {
-            val dtos by state.client.userLibraryApi
-                .getLatestMedia(includeItemTypes = listOf(BaseItemKind.MUSIC_ALBUM), limit = 5)
-
-            albums = dtos.map {
-                Album(
-                    id = it.id,
-                    name = it.name!!,
-                    duration = it.runTimeTicks!!.div(600_000_000),
-                )
-            }.toImmutableList()
-        }
+    var isLoading: Boolean by remember {
+        mutableStateOf(false)
     }
 
-    LatestAlbumsRow(albums = albums, modifier = modifier)
+    LaunchedEffect(server) {
+        latestAlbumStore.stream(StoreReadRequest.cached(server, refresh = true))
+            .takeWhile { lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) }
+            .collect {
+                when (it) {
+                    is StoreReadResponse.Loading -> {
+                        isLoading = true
+                    }
+                    is StoreReadResponse.Data -> {
+                        albums = it.dataOrNull().orEmpty().toImmutableList()
+                        isLoading = false
+                    }
+                    is StoreReadResponse.NoNewData -> {}
+                    is StoreReadResponse.Error -> {
+                        Log.e("Latest Albums", it.errorMessageOrNull() ?: "Unknown error")
+                        // TODO: Handle error
+                    }
+                }
+            }
+    }
+
+    LatestAlbumsRow(albums = albums, modifier = modifier, isLoading = isLoading)
 }
 
 @Composable
 fun LatestAlbumsRow(
     albums: ImmutableList<Album>,
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -85,15 +109,23 @@ fun LatestAlbumsRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            items(albums.count(), key = { index -> albums[index].id }) { index ->
-                val album = albums[index]
+            if (isLoading) {
+                items(3, key = { index -> "loading-${index}" }, contentType = { "loading" }) {
+                    Box(modifier = Modifier.aspectRatio(1.0f).background(MaterialTheme.colorScheme.secondaryContainer))
+                }
+            } else {
+                items(albums.count(), key = { index -> albums[index].id }, contentType = { "album" }) { index ->
+                    val album = albums[index]
 
-                AlbumArt(
-                    album = album,
-                    modifier = Modifier.width(192.dp).clickable {
-                        navigator?.push(AlbumScreen(album.id))
-                    },
-                )
+                    AlbumArt(
+                        album = album,
+                        modifier = Modifier
+                            .width(192.dp)
+                            .clickable {
+                                navigator?.push(AlbumScreen(album.id))
+                            },
+                    )
+                }
             }
         }
     }

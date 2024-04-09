@@ -12,6 +12,11 @@ val EnglishStrings = Strings(
     },
     addNewServer = "Add new server",
 
+    tabs = TabsStrings(
+        home = "Home",
+        albums = "Albums",
+    ),
+
     homeScreen = HomeScreenStrings(
         latestAlbums = "Latest Albums"
     ),
