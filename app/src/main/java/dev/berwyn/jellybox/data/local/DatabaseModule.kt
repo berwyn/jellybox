@@ -7,6 +7,7 @@ import io.ktor.http.Url
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.time.Instant
 import java.util.UUID
 
 private object UUIDAdapter : ColumnAdapter<UUID, String> {
@@ -17,7 +18,11 @@ private object UUIDAdapter : ColumnAdapter<UUID, String> {
 private object UrlAdapter : ColumnAdapter<Url, String> {
     override fun decode(databaseValue: String): Url = Url(databaseValue)
     override fun encode(value: Url): String = value.toString()
+}
 
+private object InstantAdapter : ColumnAdapter<Instant, String> {
+    override fun decode(databaseValue: String): Instant = Instant.parse(databaseValue)
+    override fun encode(value: Instant): String = value.toString()
 }
 
 val databaseModule = module {
@@ -33,7 +38,9 @@ val databaseModule = module {
         Jellybox(
             driver = get(),
             AlbumAdapter = Album.Adapter(
-                idAdapter = UUIDAdapter
+                idAdapter = UUIDAdapter,
+                createdAtAdapter = InstantAdapter,
+                updatedAtAdapter = InstantAdapter,
             ),
             ServerAdapter = Server.Adapter(
                 idAdapter = UUIDAdapter,

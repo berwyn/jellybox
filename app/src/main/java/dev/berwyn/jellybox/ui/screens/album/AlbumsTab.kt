@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import cafe.adriel.lyricist.LocalStrings
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 
@@ -27,6 +28,6 @@ object AlbumsTab : Tab {
 
     @Composable
     override fun Content() {
-        Text("Albums")
+        Navigator(AlbumListScreen())
     }
 }

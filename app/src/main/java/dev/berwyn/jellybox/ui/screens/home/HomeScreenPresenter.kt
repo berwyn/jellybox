@@ -16,7 +16,6 @@ fun HomeScreenPresenter(
     serversFlow: Flow<ImmutableList<Server>>,
     activeServerFlow: Flow<Server?>,
     onboardingRequestedFlow: Flow<Boolean>,
-
 ): HomeScreenModel.State {
     val isLoading by remember {
         combine(serversFlow, activeServerFlow) { _, _ -> false }

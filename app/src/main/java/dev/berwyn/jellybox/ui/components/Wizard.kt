@@ -111,6 +111,7 @@ fun Wizard(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .imePadding()
             .background(backgroundColor),
     ) {
         HorizontalPager(

@@ -6,6 +6,7 @@ import dev.berwyn.jellybox.getPackageInfo
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.android.androidDevice
 import org.jellyfin.sdk.api.client.ApiClient
+import org.jellyfin.sdk.api.client.HttpClientOptions
 import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.model.ClientInfo
 
@@ -25,11 +26,6 @@ class CreateClientUseCase(
             jellyfin.createApi(
                 baseUrl = server.url.toString(),
                 accessToken = credential,
-                clientInfo = ClientInfo(
-                    name = "Jellybox",
-                    version = context.getPackageInfo().versionName
-                ),
-                deviceInfo = androidDevice(context),
             )
         }
     }

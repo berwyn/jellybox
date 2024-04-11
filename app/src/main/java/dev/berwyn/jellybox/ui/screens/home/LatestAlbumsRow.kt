@@ -43,6 +43,7 @@ import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
+import java.time.Instant
 import java.util.UUID
 
 @Composable
@@ -135,15 +136,23 @@ fun LatestAlbumsRow(
 @ThemePreviews
 @DynamicColourPreviews
 private fun LatestAlbumRowPreview() {
+    val albums = buildList<Album>(5) {
+        for (i in 1..5) {
+            val moment = Instant.now()
+
+            add(
+                Album(
+                    id = UUID.randomUUID(),
+                    name = "Album $i",
+                    duration = 0L,
+                    createdAt = moment,
+                    updatedAt = moment,
+                )
+            )
+        }
+    }.toImmutableList()
+
     JellyboxTheme {
-        LatestAlbumsRow(
-            albums = persistentListOf(
-                Album(id = UUID.randomUUID(), name = "Album 1", duration = 0L),
-                Album(id = UUID.randomUUID(), name = "Album 2", duration = 0L),
-                Album(id = UUID.randomUUID(), name = "Album 3", duration = 0L),
-                Album(id = UUID.randomUUID(), name = "Album 4", duration = 0L),
-                Album(id = UUID.randomUUID(), name = "Album 5", duration = 0L),
-            ),
-        )
+        LatestAlbumsRow(albums = albums)
     }
 }

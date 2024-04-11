@@ -63,6 +63,7 @@ sqldelight {
     databases {
         create("Jellybox") {
             packageName.set("dev.berwyn.jellybox.data.local")
+            schemaOutputDirectory.set(file("src/main/sqldelight/databases"))
         }
     }
 }

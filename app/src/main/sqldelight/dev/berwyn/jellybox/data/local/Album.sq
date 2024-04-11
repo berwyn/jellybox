@@ -1,18 +1,21 @@
+import java.time.Instant;
 import java.util.UUID;
 
 CREATE TABLE Album (
     id TEXT AS UUID PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
-    duration INTEGER NOT NULL
+    duration INTEGER NOT NULL,
+    createdAt TEXT AS Instant NOT NULL,
+    updatedAt TEXT AS Instant NOT NULL
 );
 
 upsert:
-INSERT OR REPLACE INTO Album(id, name, duration)
+INSERT OR REPLACE INTO Album(id, name, duration, createdAt, updatedAt)
 VALUES ?;
 
 upsertWithServer {
-    INSERT OR REPLACE INTO Album(id, name, duration)
-    VALUES (:id, :name, :duration);
+    INSERT OR REPLACE INTO Album(id, name, duration, createdAt, updatedAt)
+    VALUES (:id, :name, :duration, :createdAt, :updatedAt);
 
     INSERT OR IGNORE INTO ServerAlbum(albumId, serverId)
     VALUES (:id, :serverId);
@@ -22,6 +25,20 @@ delete:
 DELETE FROM Album
 WHERE id = ?;
 
+getAll:
+SELECT * FROM Album;
+
+getAllForServer:
+WITH
+selectedServer AS (
+    SELECT id FROM Server WHERE id = ?
+),
+serverAlbums AS (
+    SELECT albumId FROM ServerAlbum WHERE serverId IN selectedServer
+)
+SELECT * FROM Album
+WHERE id IN serverAlbums
+;
 
 getById:
 SELECT *
